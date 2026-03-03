@@ -1,139 +1,62 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register| Placement Portal</title>
-    
+    <title>Register | Placement Portal</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-    
-    <style>
-        :root {
-            --brand-primary: #4e73df;
-            --bg-light: #f8f9fc;
-        }
-
-        body { 
-            background: linear-gradient(135deg, #f6f8ff 0%, #f1f4f9 100%);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        .registration-card {
-            border: none;
-            border-radius: 1.5rem;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-            overflow: hidden;
-        }
-
-        .btn-register {
-            background-color: var(--brand-primary);
-            border: none;
-            padding: 12px;
-            font-weight: 700;
-            border-radius: 10px;
-            transition: all 0.3s ease;
-        }
-
-        .btn-register:disabled {
-            background-color: #bdc3c7;
-            cursor: not-allowed;
-        }
-
-        .form-control {
-            border-radius: 10px;
-            padding: 12px;
-            border: 1px solid #d1d3e2;
-        }
-
-        .form-control:focus {
-            border-color: var(--brand-primary);
-            box-shadow: 0 0 0 0.25 font-size rgba(78, 115, 223, 0.25);
-        }
-
-        .conduct-link {
-            color: var(--brand-primary);
-            font-weight: 600;
-            text-decoration: none;
-            border-bottom: 1px dashed var(--brand-primary);
-        }
-
-        .conduct-link:hover {
-            color: #2e59d9;
-            border-bottom: 1px solid #2e59d9;
-        }
-    </style>
 </head>
-<body>
+<body class="bg-light">
 
-    <div class="container d-flex align-items-center justify-content-center min-vh-100">
-        <div class="registration-card card w-100 shadow-lg" style="max-width: 500px;">
-            <div class="card-body p-5">
-                
-              <div class="container d-flex align-items-center justify-content-center min-vh-100">
-        <div class="auth-shell p-4 p-md-5 w-100" style="max-width: 480px;">
-            
-            <div class="text-center mb-5">
-                <h2 class="fw-black text-dark tracking-tight">Placement Portal</h2>
-                <p class="text-secondary small">Create your profile</p>
+<div class="container mt-5" style="max-width:500px;">
+    <div class="card shadow p-4">
+
+        <h3 class="text-center mb-4">Create Your Profile</h3>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{category}}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        <form method="POST">
+
+            <div class="mb-3">
+                <label class="form-label">Registering As</label>
+                <select class="form-select" name="role" required>
+                    <option value="student">Candidate</option>
+                    <option value="company">Recruiter</option>
+                </select>
             </div>
 
-                <form action="/register" method="POST" id="registrationForm">
-                    <div class="mb-3">
-                        <label class="form-label small fw-bold text-secondary">Registering as</label>
-                        <select class="form-select shadow-sm" name="role" required>
-                            <option value="student">Candidate</option>
-                            <option value="company">Recruiter</option>
-                        </select>
-                    </div>
-
-                    <div class="mb-3">
-                        <input type="text" class="form-control shadow-sm" name="fullname" placeholder="Full Name" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <input type="email" class="form-control shadow-sm" name="email" placeholder="Institutional Email (name@univ.edu)" required>
-                    </div>
-
-                    <div class="mb-4">
-                        <input type="password" class="form-control shadow-sm" name="password" placeholder="Create Password" required>
-                    </div>
-
-                    <div class="mb-4">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="agreeCheck">
-                            <label class="form-check-label small text-muted" for="agreeCheck">
-                                I have read and agree to the 
-                                <a href="conduct.html" target="_blank" class="conduct-link">
-                                    Placement Code of Conduct
-                                </a> 
-                                and will abide by its rules.
-                            </label>
-                        </div>
-                    </div>
-
-                    <button type="submit" id="submitBtn" class="btn btn-primary btn-register w-100 shadow-sm" disabled>
-                        Create My Profile
-                    </button>
-                </form>
-
-                <div class="text-center mt-4">
-                    <p class="small text-muted mb-0">Already have an account? <a href="login.html" class="text-decoration-none fw-bold">Login</a></p>
-                </div>
-
+            <div class="mb-3">
+                <input type="text" class="form-control" name="name" placeholder="Full Name" required>
             </div>
+
+            <div class="mb-3">
+                <input type="text" class="form-control" name="username" placeholder="Username" required>
+            </div>
+
+            <div class="mb-3">
+                <input type="email" class="form-control" name="email" placeholder="Email" required>
+            </div>
+
+            <div class="mb-3">
+                <input type="password" class="form-control" name="password" placeholder="Password" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">
+                Register
+            </button>
+
+        </form>
+
+        <div class="text-center mt-3">
+            <small>Already have an account? <a href="/login">Login</a></small>
         </div>
+
     </div>
+</div>
 
-    <script>
-        const checkbox = document.getElementById('agreeCheck');
-        const submitBtn = document.getElementById('submitBtn');
-
-        checkbox.addEventListener('change', function() {
-            submitBtn.disabled = !this.checked;
-        });
-    </script>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
