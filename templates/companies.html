@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Company Approvals</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-light">
+
+<div class="container-fluid">
+<div class="row">
+
+<!-- Sidebar -->
+<div class="col-md-3 col-lg-2 bg-black text-white min-vh-100 p-3">
+
+<h5 class="mb-4">Manager Panel</h5>
+
+<ul class="nav flex-column">
+
+<li class="nav-item mb-2">
+<a href="/manager" class="nav-link text-white">Dashboard</a>
+</li>
+
+<li class="nav-item mb-2">
+<a href="/manager/companies" class="nav-link text-white">Companies</a>
+</li>
+
+<li class="nav-item mb-2">
+<a href="/manager/students" class="nav-link text-white">Students</a>
+</li>
+
+<li class="nav-item mb-2">
+<a href="/manager/drives" class="nav-link text-white">Drives</a>
+</li>
+
+<hr class="bg-light">
+
+<li class="nav-item">
+<a href="/logout" class="nav-link text-danger">Logout</a>
+</li>
+
+</ul>
+
+</div>
+
+
+<!-- Main Content -->
+<div class="col-md-9 col-lg-10 p-4">
+
+<h4 class="mb-4">Company Management</h4>
+
+<table class="table table-bordered table-striped">
+
+<thead>
+<tr>
+<th>Company</th>
+<th>Email</th>
+<th>Category</th>
+<th>Status</th>
+<th>Actions</th>
+</tr>
+</thead>
+
+<tbody>
+
+{% for company in companies %}
+
+<tr>
+
+<td>{{ company.name }}</td>
+<td>{{ company.email }}</td>
+<td>{{ company.scale }}</td>
+
+<td>
+
+{% if company.status == "Pending" %}
+<span class="badge bg-warning text-dark">Pending</span>
+
+{% elif company.status == "Approved" %}
+<span class="badge bg-success">Approved</span>
+
+{% elif company.status == "Rejected" %}
+<span class="badge bg-secondary">Rejected</span>
+
+{% endif %}
+
+{% if company.isBlacklisted %}
+<span class="badge bg-danger">Blacklisted</span>
+{% endif %}
+
+</td>
+
+<td>
+
+<a href="/manager/company/{{company.id}}" class="btn btn-primary btn-sm">
+View
+</a>
+
+<a href="/manager/company/approve/{{company.id}}" class="btn btn-success btn-sm">
+Approve
+</a>
+
+<a href="/manager/company/reject/{{company.id}}" class="btn btn-warning btn-sm">
+Reject
+</a>
+
+{% if company.isBlacklisted %}
+
+<a href="/manager/company/whitelist/{{company.id}}" class="btn btn-info btn-sm">
+Whitelist
+</a>
+
+{% else %}
+
+<a href="/manager/company/blacklist/{{company.id}}" class="btn btn-danger btn-sm">
+Blacklist
+</a>
+
+{% endif %}
+
+</td>
+
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+</div>
+
+</body>
+</html>

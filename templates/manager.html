@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Manager Dashboard | Placement Portal</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-light">
+
+<div class="container-fluid">
+<div class="row">
+
+<!-- Sidebar -->
+<div class="col-md-3 col-lg-2 bg-black text-white min-vh-100 p-3">
+
+<h5 class="mb-4">Manager Panel</h5>
+
+<ul class="nav flex-column">
+
+<li class="nav-item mb-2">
+<a href="/manager" class="nav-link text-white">Dashboard</a>
+</li>
+
+<li class="nav-item mb-2">
+<a href="/manager/companies" class="nav-link text-white">Companies</a>
+</li>
+
+<li class="nav-item mb-2">
+<a href="/manager/students" class="nav-link text-white">Students</a>
+</li>
+
+<li class="nav-item mb-2">
+<a href="/manager/drives" class="nav-link text-white">Drives</a>
+</li>
+
+<hr class="bg-light">
+
+<li class="nav-item">
+<a href="/logout" class="nav-link text-danger">Logout</a>
+</li>
+
+</ul>
+
+</div>
+
+
+<!-- Main Content -->
+<div class="col-md-9 col-lg-10 p-4">
+
+<h4 class="mb-4">Dashboard Overview</h4>
+
+<div class="row">
+
+<div class="col-md-4 mb-3">
+<div class="card text-center shadow-sm">
+<div class="card-body">
+<h6 class="text-muted">Total Students</h6>
+<h3>{{students}}</h3>
+</div>
+</div>
+</div>
+
+<div class="col-md-4 mb-3">
+<div class="card text-center shadow-sm">
+<div class="card-body">
+<h6 class="text-muted">Pending Approvals</h6>
+<h3>{{pending}}</h3>
+</div>
+</div>
+</div>
+
+<div class="col-md-4 mb-3">
+<div class="card text-center shadow-sm">
+<div class="card-body">
+<h6 class="text-muted">Total Drives</h6>
+<h3>{{drives}}</h3>
+</div>
+</div>
+</div>
+
+</div>
+
+<hr class="my-4">
+
+
+<!-- SEARCH BAR -->
+<h5>Search Students or Companies</h5>
+
+<form method="GET" action="/manager">
+
+<div class="input-group mb-4">
+
+<input type="text"
+name="query"
+class="form-control"
+placeholder="Search student name, ID, contact or company name / industry"
+value="{{request.args.get('query','')}}">
+
+<button class="btn btn-primary">
+Search
+</button>
+
+</div>
+
+</form>
+
+
+<!-- STUDENT RESULTS -->
+
+{% if student_results %}
+
+<h5 class="mt-4">Student Results</h5>
+
+<table class="table table-bordered table-striped">
+
+<thead>
+<tr>
+<th>ID</th>
+<th>Name</th>
+<th>Email</th>
+<th>Contact</th>
+</tr>
+</thead>
+
+<tbody>
+
+{% for s in student_results %}
+
+<tr>
+
+<td>{{s.id}}</td>
+<td>{{s.name}}</td>
+<td>{{s.email}}</td>
+<td>{{s.contact}}</td>
+
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+{% endif %}
+
+
+
+<!-- COMPANY RESULTS -->
+
+{% if company_results %}
+
+<h5 class="mt-4">Company Results</h5>
+
+<table class="table table-bordered table-striped">
+
+<thead>
+<tr>
+<th>ID</th>
+<th>Company Name</th>
+<th>Email</th>
+<th>Industry</th>
+</tr>
+</thead>
+
+<tbody>
+
+{% for c in company_results %}
+
+<tr>
+
+<td>{{c.id}}</td>
+<td>{{c.name}}</td>
+<td>{{c.email}}</td>
+<td>{{c.scale}}</td>
+
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+{% endif %}
+
+
+</div>
+</div>
+</div>
+
+</body>
+</html>

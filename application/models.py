@@ -1,6 +1,7 @@
 from .database import db
+from flask_login import UserMixin
 
-class User(db.Model):
+class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
@@ -10,7 +11,6 @@ class User(db.Model):
     isBlacklisted = db.Column(db.Boolean, nullable=False, default=False)
 
     #Relationships
-    company = db.relationship('Company', backref='user', uselist=False)
     student = db.relationship('Student', backref='user', uselist=False)
 
 
@@ -21,23 +21,29 @@ class Student(db.Model):
     department = db.Column(db.String(50), nullable=False)
     yearOfStudy = db.Column(db.Integer, nullable=False)
 
-class Company(db.Model):
+class Company(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    username = db.Column(db.String(100), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     name = db.Column(db.String(100), unique=True, nullable=False)
     password = db.Column(db.String(128), nullable=False)
-    isBlacklisted = db.Column(db.Boolean, nullable=False, default=False)
-    category = db.Column(db.String(50), nullable=False)
+    
+    # Details
+    category = db.Column(db.String(50), nullable=False) # Gold, Silver, etc.
+    scale = db.Column(db.String(50), nullable=False)    # MNC, Startup, etc.
     description = db.Column(db.Text, nullable=True)
-    drives = db.relationship('Drive', backref='company', lazy=True)
-    scale = db.Column(db.String(50), nullable=False)
     placementHistory = db.Column(db.Text, nullable=True)
+    
+    # Contact Info
     address = db.Column(db.String(100), nullable=True)
     locations = db.Column(db.String(200), nullable=True)
     website = db.Column(db.String(100), nullable=True)
     contactName = db.Column(db.String(100), nullable=True)
-    contactEmail = db.Column(db.String(120), unique=True, nullable=False)
+    contactEmail = db.Column(db.String(120), nullable=True)
+    status = db.Column(db.String(50), nullable=False, default="Pending")
+    isBlacklisted = db.Column(db.Boolean, nullable=False, default=False)
+    # Relationship to drives (assuming Drive model exists)
+    drives = db.relationship('Drive', backref='company', lazy=True)
 
 
 class Drive(db.Model):
