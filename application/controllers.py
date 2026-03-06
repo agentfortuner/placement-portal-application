@@ -6,19 +6,19 @@ from app import app
 from datetime import datetime
 import os
 
-# ---------------- HOME ----------------
+# HOME PAGE
 @app.route("/home")
 def home():
     return render_template("base.html")
 
 
-# ---------------- REGISTER SELECT ----------------
+#REGISTER SELECT PAGE
 @app.route("/register")
 def register():
     return render_template("register.html")
 
 
-# ---------------- STUDENT REGISTER ----------------
+# REGISTER STUDENT PAGE
 @app.route("/register-student", methods=["GET","POST"])
 def student_register():
 
@@ -73,15 +73,15 @@ def view_resume(filename):
         filename
     )
 
+#REGISTER COMPANY PAGE
 @app.route("/register-company", methods=["GET", "POST"])
 def company_register():
     if request.method == "POST":
-        # 1. Collect all data from the form
         new_company = Company(
             name=request.form.get("name"),
             username=request.form.get("username"),
             email=request.form.get("email"),
-            password=request.form.get("password"), # Note: Use generate_password_hash in production!
+            password=request.form.get("password"),
             contactName=request.form.get("contactName"),
             contactEmail=request.form.get("contactEmail"),
             category=request.form.get("category"),
@@ -94,7 +94,6 @@ def company_register():
         )
 
         try:
-            # 2. Add to database
             db.session.add(new_company)
             db.session.commit()
             flash("Company registered successfully! Please login.", "success")
@@ -106,6 +105,7 @@ def company_register():
     return render_template("companyreg.html")
 
 
+#LOGIN PAGE
 @app.route("/login", methods=["GET", "POST"])
 def login():
 
@@ -117,7 +117,7 @@ def login():
         this_user = User.query.filter_by(username=username).first()
         this_company = Company.query.filter_by(username=username).first()
 
-        # ---------- COMPANY LOGIN ----------
+        # COMPANY LOGIN
         if this_company:
 
             login_user(this_company)
@@ -139,7 +139,7 @@ def login():
             else:
                 flash("Company Blacklisted! Contact Admin.", "danger")
 
-        # ---------- USER LOGIN ----------
+        #USER LOGIN
         elif this_user:
 
             login_user(this_user)
@@ -179,7 +179,7 @@ def login():
     return render_template("login.html")
 
 
-# ---------------- MANAGER DASHBOARD ----------------
+#MANAGER DASHBOARD
 @app.route("/manager")
 @login_required
 def manager_dashboard():
@@ -217,7 +217,8 @@ def manager_dashboard():
         student_results=student_results,
         company_results=company_results
     )
-# ---------------- COMPANY APPROVALS ----------------
+
+#MANAGER DASHBOARD - COMPANY DETAILS
 @app.route("/manager/companies")
 @login_required
 def manager_companies():
@@ -230,7 +231,6 @@ def manager_companies():
     return render_template("companies.html", companies=companies)
 
 
-# ---------------- COMPANY DETAILS ----------------
 @app.route("/manager/company/<int:id>")
 @login_required
 def company_details(id):
@@ -302,7 +302,8 @@ def whitelist_company(id):
 
     return redirect("/manager/companies")
 
-# ---------------- STUDENT LIST ----------------
+#MANAGER DASHBOARD - STUDENT DETAILS
+
 @app.route("/manager/students")
 @login_required
 def manager_students():
@@ -359,7 +360,7 @@ def whitelist_student(id):
 
     return redirect("/manager/students")
 
-# Drives
+# MANAGER DASHBOARD - Drives
 @app.route("/manager/drives")
 @login_required
 def manager_drives():
@@ -426,7 +427,9 @@ def revert_drive_pending(id):
     return redirect("/manager/drives")
 
 
-# ---------------- STUDENT DASHBOARD ----------------
+
+
+# STUDENT DASHBOARD
 @app.route("/student")
 @login_required
 def student_dashboard():
@@ -528,7 +531,6 @@ def apply_drive(drive_id):
 
     drive = Drive.query.get_or_404(drive_id)
 
-    # -------- Eligibility Check --------
     if drive.eligibilityCriteria:
 
         try:
@@ -551,7 +553,6 @@ def apply_drive(drive_id):
         except:
             pass
 
-    # -------- Prevent Duplicate --------
     existing = Application.query.filter_by(
         studentId=student.id,
         driveId=drive_id
@@ -639,7 +640,7 @@ def view_student_profile():
 
 
 
-# ---------------- COMPANY DASHBOARD ----------------
+#COMPANY DASHBOARD
 @app.route("/company")
 @login_required
 def company_dashboard():
@@ -853,7 +854,7 @@ def revert_application(id):
 
     return redirect("/company/applications")
 
-# ---------------- LOGOUT ----------------
+# LOGOUT PAGE
 @app.route("/logout")
 @login_required
 def logout():
