@@ -7,30 +7,76 @@
 
 <body class="bg-light">
 
-<div class="container mt-5" style="max-width:600px">
+<div class="container-fluid">
+<div class="row">
 
-<h3>Create Placement Drive</h3>
+<div class="col-md-3 col-lg-2 bg-dark text-white min-vh-100 p-3">
+
+<h5 class="mb-4">Company Panel</h5>
+
+<ul class="nav flex-column">
+
+<li class="nav-item mb-2">
+<a href="/company" class="nav-link text-white">Dashboard</a>
+</li>
+
+<li class="nav-item mb-2">
+<a href="/company/profile" class="nav-link text-white">Profile</a>
+</li>
+
+<li class="nav-item mb-2">
+<a href="/company/drives" class="nav-link text-white">Placement Drives</a>
+</li>
+
+<li class="nav-item mb-2">
+<a href="/company/applications" class="nav-link text-white">Applications</a>
+</li>
+
+<hr class="bg-light">
+
+<li class="nav-item">
+<a href="/logout" class="nav-link text-danger">Logout</a>
+</li>
+
+</ul>
+</div>
+
+
+<div class="col-md-9 col-lg-10 p-4">
+
+<h4>Create Placement Drive</h4>
 
 <form method="POST">
 
 <input name="title" class="form-control mb-3" placeholder="Job Title">
 
-<textarea name="description" class="form-control mb-3" placeholder="Description"></textarea>
+<textarea name="description" class="form-control mb-3" placeholder="Job Description"></textarea>
 
-<textarea name="eligibilityCriteria" class="form-control mb-3" placeholder="Eligibility"></textarea>
+<textarea name="eligibilityCriteria" class="form-control mb-3" placeholder="Eligibility Criteria"></textarea>
 
-<input name="vacancy" type="number" class="form-control mb-3" placeholder="Vacancies">
+<input name="salary" class="form-control mb-3" placeholder="Salary Package">
 
-<input name="location" class="form-control mb-3" placeholder="Location">
+<input name="skillsRequired" class="form-control mb-3" placeholder="Required Skills">
+
+<input name="experienceRequired" class="form-control mb-3" placeholder="Experience Required">
+
+<input name="vacancy" type="number" class="form-control mb-3" placeholder="Number of Vacancies">
+
+<input name="location" class="form-control mb-3" placeholder="Job Location">
 
 <input type="date" name="applicationDeadline" class="form-control mb-3">
 
-<button class="btn btn-primary w-100">
+<input type="number" name="interviewrounds" class="form-control mb-3" placeholder="Interview Rounds" value="2">
+
+<button class="btn btn-primary">
 Create Drive
 </button>
 
 </form>
 
+</div>
+
+</div>
 </div>
 
 </body>

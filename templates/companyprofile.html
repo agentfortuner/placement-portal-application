@@ -7,21 +7,95 @@
 
 <body class="bg-light">
 
-<div class="container mt-5">
+<div class="container-fluid">
+<div class="row">
 
-<h3>{{company.name}}</h3>
+<div class="col-md-3 col-lg-2 bg-dark text-white min-vh-100 p-3">
 
-<p><strong>Email:</strong> {{company.email}}</p>
-<p><strong>Category:</strong> {{company.category}}</p>
-<p><strong>Scale:</strong> {{company.scale}}</p>
+<h5 class="mb-4">Company Panel</h5>
 
-<p><strong>Website:</strong> {{company.website}}</p>
-<p><strong>Locations:</strong> {{company.locations}}</p>
+<ul class="nav flex-column">
 
-<h5 class="mt-4">Description</h5>
+<li class="nav-item mb-2">
+<a href="/company" class="nav-link text-white">Dashboard</a>
+</li>
 
-<p>{{company.description}}</p>
+<li class="nav-item mb-2">
+<a href="/company/profile" class="nav-link text-white">Profile</a>
+</li>
 
+<li class="nav-item mb-2">
+<a href="/company/drives" class="nav-link text-white">Placement Drives</a>
+</li>
+
+<li class="nav-item mb-2">
+<a href="/company/applications" class="nav-link text-white">Applications</a>
+</li>
+
+<hr class="bg-light">
+
+<li class="nav-item">
+<a href="/logout" class="nav-link text-danger">Logout</a>
+</li>
+
+</ul>
+
+</div>
+
+
+<div class="col-md-9 col-lg-10 p-4">
+
+<h4>Company Profile</h4>
+
+<div class="card shadow-sm mt-3">
+
+<div class="card-body">
+
+<form method="POST" action="/company/profile/update">
+
+<div class="mb-3">
+<label class="form-label"><strong>Name</strong></label>
+<input type="text" name="name" class="form-control" value="{{company.name}}">
+</div>
+
+<div class="mb-3">
+<label class="form-label"><strong>Email</strong></label>
+<input type="email" class="form-control" value="{{company.email}}" disabled>
+</div>
+
+<div class="mb-3">
+<label class="form-label"><strong>Industry</strong></label>
+<input type="text" name="category" class="form-control" value="{{company.category}}">
+</div>
+
+<div class="mb-3">
+<label class="form-label"><strong>Scale</strong></label>
+<input type="text" name="scale" class="form-control" value="{{company.scale}}">
+</div>
+
+<div class="mb-3">
+<label class="form-label"><strong>Website</strong></label>
+<input type="text" name="website" class="form-control" value="{{company.website}}">
+</div>
+
+<div class="mb-3">
+<label class="form-label"><strong>Description</strong></label>
+<textarea name="description" class="form-control">{{company.description}}</textarea>
+</div>
+
+<button class="btn btn-primary">
+Update Profile
+</button>
+
+</form>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
 </div>
 
 </body>

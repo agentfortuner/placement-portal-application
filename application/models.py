@@ -19,8 +19,10 @@ class Student(db.Model):
     userId = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     rollNumber = db.Column(db.String(20), unique=True, nullable=False)
     department = db.Column(db.String(50), nullable=False)
+    gpa = db.Column(db.Float, nullable=False)
+    resume = db.Column(db.String(200), nullable=True)  # Path to resume file
     yearOfStudy = db.Column(db.Integer, nullable=False)
-
+    applications = db.relationship("Application",back_populates="student", cascade="all, delete-orphan" )
 class Company(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(100), unique=True, nullable=False)
@@ -52,13 +54,16 @@ class Drive(db.Model):
     title = db.Column(db.String(100), nullable=False)
     description = db.Column(db.Text, nullable=True)
     eligibilityCriteria = db.Column(db.Text, nullable=True)
+    salary = db.Column(db.String(50), nullable=True)
+    skillsRequired = db.Column(db.String(200), nullable=True)
+    experienceRequired = db.Column(db.String(50), nullable=True)
     applicationDeadline = db.Column(db.DateTime, nullable=False)
     vacancy = db.Column(db.Integer, nullable=False)
     location = db.Column(db.String(100), nullable=True)
     hiringStatus = db.Column(db.String(50), nullable=False, default="Hiring")
     adminStatus = db.Column(db.String(50), nullable=False, default="Pending")
     applications = db.relationship('Application', backref='drive', lazy=True)
-    interviewrounds = db.Column(db.Integer, nullable=False, default="2")
+    interviewrounds = db.Column(db.Integer, nullable=False, default=2)
 
 
 class Application(db.Model):
@@ -69,3 +74,4 @@ class Application(db.Model):
     gpa = db.Column(db.Float, nullable=False)
     department = db.Column(db.String(50), nullable=False)
     status = db.Column(db.String(50), nullable=False, default="Applied")
+    student = db.relationship('Student', back_populates='applications', lazy=True)

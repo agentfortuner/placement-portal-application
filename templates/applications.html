@@ -7,37 +7,184 @@
 
 <body class="bg-light">
 
-<div class="container mt-5">
+<div class="container-fluid">
+<div class="row">
 
-<h3>Student Applications</h3>
+<!-- Sidebar -->
+<div class="col-md-3 col-lg-2 bg-dark text-white min-vh-100 p-3">
 
-<table class="table table-bordered">
+<h5 class="mb-4">Company Panel</h5>
 
+<ul class="nav flex-column">
+
+<li class="nav-item mb-2">
+<a href="/company" class="nav-link text-white">Dashboard</a>
+</li>
+
+<li class="nav-item mb-2">
+<a href="/company/profile" class="nav-link text-white">Profile</a>
+</li>
+
+<li class="nav-item mb-2">
+<a href="/company/drives" class="nav-link text-white">Placement Drives</a>
+</li>
+
+<li class="nav-item mb-2">
+<a href="/company/applications" class="nav-link text-white">Applications</a>
+</li>
+
+<hr class="bg-light">
+
+<li class="nav-item">
+<a href="/logout" class="nav-link text-danger">Logout</a>
+</li>
+
+</ul>
+
+</div>
+
+
+<!-- Main Content -->
+<div class="col-md-9 col-lg-10 p-4">
+
+<h4 class="mb-4">Student Applications</h4>
+
+<table class="table table-bordered table-striped">
+
+<thead>
 <tr>
 <th>Student</th>
 <th>Drive</th>
 <th>Department</th>
 <th>Status</th>
+<th>Actions</th>
 </tr>
+</thead>
+
+<tbody>
 
 {% for application in applications %}
 
 <tr>
 
-<td>{{application.student.user.name}}</td>
+<!-- Student Name -->
+<td>
+{% if application.student and application.student.user %}
+{{ application.student.user.name }}
+{% else %}
+Unknown Student
+{% endif %}
+</td>
 
-<td>{{application.drive.title}}</td>
+<!-- Drive -->
+<td>{{ application.drive.title }}</td>
 
-<td>{{application.department}}</td>
+<!-- Department -->
+<td>{{ application.department }}</td>
 
-<td>{{application.status}}</td>
+<!-- Status -->
+<td>
+
+{% if application.status == "Applied" %}
+<span class="badge bg-secondary">Applied</span>
+
+{% elif application.status == "Shortlisted" %}
+<span class="badge bg-warning text-dark">Shortlisted</span>
+
+{% elif application.status == "Selected" %}
+<span class="badge bg-success">Selected</span>
+
+{% elif application.status == "Rejected" %}
+<span class="badge bg-danger">Rejected</span>
+
+{% endif %}
+
+</td>
+
+<!-- Actions -->
+<td>
+
+<a href="/company/application/{{application.id}}" 
+class="btn btn-primary btn-sm">
+View
+</a>
+
+{% if application.student and application.student.resume %}
+<a href="/resume/{{application.student.resume}}" 
+class="btn btn-info btn-sm" target="_blank">
+Resume
+</a>
+{% endif %}
+
+<div class="mt-2">
+
+{% if application.status == "Applied" %}
+
+<a href="/company/application/{{application.id}}/shortlist"
+class="btn btn-warning btn-sm">
+Shortlist
+</a>
+
+<a href="/company/application/{{application.id}}/reject"
+class="btn btn-danger btn-sm">
+Reject
+</a>
+
+{% elif application.status == "Shortlisted" %}
+
+<a href="/company/application/{{application.id}}/select"
+class="btn btn-success btn-sm">
+Select
+</a>
+
+<a href="/company/application/{{application.id}}/reject"
+class="btn btn-danger btn-sm">
+Reject
+</a>
+
+<a href="/company/application/{{application.id}}/applied"
+class="btn btn-secondary btn-sm">
+Revert
+</a>
+
+{% elif application.status == "Rejected" %}
+
+<a href="/company/application/{{application.id}}/shortlist"
+class="btn btn-warning btn-sm">
+Shortlist
+</a>
+
+<a href="/company/application/{{application.id}}/applied"
+class="btn btn-secondary btn-sm">
+Revert
+</a>
+
+{% elif application.status == "Selected" %}
+
+<span class="badge bg-success">Finalized</span>
+
+<a href="/company/application/{{application.id}}/applied"
+class="btn btn-secondary btn-sm">
+Revert
+</a>
+
+{% endif %}
+
+</div>
+
+</td>
 
 </tr>
 
 {% endfor %}
 
+</tbody>
+
 </table>
 
+</div>
+
+</div>
 </div>
 
 </body>

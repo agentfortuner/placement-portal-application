@@ -36,6 +36,7 @@
 <a href="/manager/drives" class="nav-link text-white">Drives</a>
 </li>
 
+
 <hr class="bg-light">
 
 <li class="nav-item">
@@ -54,7 +55,7 @@
 
 <div class="row">
 
-<div class="col-md-4 mb-3">
+<div class="col-md-3 mb-3">
 <div class="card text-center shadow-sm">
 <div class="card-body">
 <h6 class="text-muted">Total Students</h6>
@@ -63,16 +64,16 @@
 </div>
 </div>
 
-<div class="col-md-4 mb-3">
+<div class="col-md-3 mb-3">
 <div class="card text-center shadow-sm">
 <div class="card-body">
-<h6 class="text-muted">Pending Approvals</h6>
-<h3>{{pending}}</h3>
+<h6 class="text-muted">Companies</h6>
+<h3>{{companies}}</h3>
 </div>
 </div>
 </div>
 
-<div class="col-md-4 mb-3">
+<div class="col-md-3 mb-3">
 <div class="card text-center shadow-sm">
 <div class="card-body">
 <h6 class="text-muted">Total Drives</h6>
@@ -82,11 +83,14 @@
 </div>
 
 </div>
+</div>
+
+</div>
 
 <hr class="my-4">
 
-
 <!-- SEARCH BAR -->
+
 <h5>Search Students or Companies</h5>
 
 <form method="GET" action="/manager">
@@ -96,7 +100,7 @@
 <input type="text"
 name="query"
 class="form-control"
-placeholder="Search student name, ID, contact or company name / industry"
+placeholder="Search student name, ID, or company"
 value="{{request.args.get('query','')}}">
 
 <button class="btn btn-primary">
@@ -121,7 +125,7 @@ Search
 <th>ID</th>
 <th>Name</th>
 <th>Email</th>
-<th>Contact</th>
+<th>Department</th>
 </tr>
 </thead>
 
@@ -130,12 +134,10 @@ Search
 {% for s in student_results %}
 
 <tr>
-
 <td>{{s.id}}</td>
-<td>{{s.name}}</td>
-<td>{{s.email}}</td>
-<td>{{s.contact}}</td>
-
+<td>{{s.user.name}}</td>
+<td>{{s.user.email}}</td>
+<td>{{s.department}}</td>
 </tr>
 
 {% endfor %}
@@ -159,7 +161,7 @@ Search
 <thead>
 <tr>
 <th>ID</th>
-<th>Company Name</th>
+<th>Name</th>
 <th>Email</th>
 <th>Industry</th>
 </tr>
@@ -170,12 +172,10 @@ Search
 {% for c in company_results %}
 
 <tr>
-
 <td>{{c.id}}</td>
 <td>{{c.name}}</td>
 <td>{{c.email}}</td>
 <td>{{c.scale}}</td>
-
 </tr>
 
 {% endfor %}
@@ -185,6 +185,74 @@ Search
 </table>
 
 {% endif %}
+
+
+<hr class="my-4">
+
+
+<!-- UPCOMING DRIVES -->
+
+<h5>Upcoming Drives</h5>
+
+<table class="table table-bordered">
+
+<tr>
+<th>Company</th>
+<th>Title</th>
+<th>Deadline</th>
+<th>Status</th>
+</tr>
+
+{% for drive in upcoming_drives %}
+
+<tr>
+
+<td>{{drive.company.name}}</td>
+<td>{{drive.title}}</td>
+<td>{{drive.applicationDeadline}}</td>
+
+<td>
+<span class="badge bg-success">Hiring</span>
+</td>
+
+</tr>
+
+{% endfor %}
+
+</table>
+
+
+
+<!-- PAST DRIVES -->
+
+<h5 class="mt-4">Past Drives</h5>
+
+<table class="table table-bordered">
+
+<tr>
+<th>Company</th>
+<th>Title</th>
+<th>Deadline</th>
+<th>Status</th>
+</tr>
+
+{% for drive in past_drives %}
+
+<tr>
+
+<td>{{drive.company.name}}</td>
+<td>{{drive.title}}</td>
+<td>{{drive.applicationDeadline}}</td>
+
+<td>
+<span class="badge bg-secondary">Closed</span>
+</td>
+
+</tr>
+
+{% endfor %}
+
+</table>
 
 
 </div>

@@ -7,29 +7,108 @@
 
 <body class="bg-light">
 
-<div class="container mt-5">
+<div class="container-fluid">
+<div class="row">
 
-<div class="card shadow-sm p-4">
+<!-- Sidebar -->
+<div class="col-md-3 col-lg-2 bg-dark text-white min-vh-100 p-3">
 
-<h2 class="mb-3">{{ user.name }}</h2>
+<h5 class="mb-4">Student Panel</h5>
 
-<p><strong>Email:</strong> {{ user.email }}</p>
-<p><strong>Username:</strong> {{ user.username }}</p>
+<ul class="nav flex-column">
 
-<hr>
+<li class="nav-item mb-2">
+<a href="/student" class="nav-link text-white">Dashboard</a>
+</li>
 
-<h5>Academic Details</h5>
+<li class="nav-item mb-2">
+<a href="/student/profile" class="nav-link text-white">Profile</a>
+</li>
 
-<p><strong>Department:</strong> {{ student.department }}</p>
-<p><strong>Roll Number:</strong> {{ student.rollNumber }}</p>
-<p><strong>Year:</strong> {{ student.yearOfStudy }}</p>
+<li class="nav-item mb-2">
+<a href="/student/drives" class="nav-link text-white">Apply Drives</a>
+</li>
 
-<a href="/manager/students" class="btn btn-secondary mt-3">
-Back
-</a>
+<li class="nav-item mb-2">
+<a href="/student/applications" class="nav-link text-white">My Applications</a>
+</li>
+
+<li class="nav-item">
+<a href="/logout" class="nav-link text-danger">Logout</a>
+</li>
+
+</ul>
 
 </div>
 
+
+<!-- Main Content -->
+<div class="col-md-9 col-lg-10 p-4">
+
+<h4>Student Profile</h4>
+
+<div class="card shadow-sm mt-3">
+
+<div class="card-body">
+
+<form method="POST" enctype="multipart/form-data">
+
+<div class="mb-3">
+<label class="form-label">Roll Number</label>
+<input name="rollNumber" class="form-control"
+value="{{student.rollNumber}}" required>
+</div>
+
+<div class="mb-3">
+<label class="form-label">Department</label>
+<input name="department" class="form-control"
+value="{{student.department}}" required>
+</div>
+
+<div class="mb-3">
+<label class="form-label">GPA</label>
+<input name="gpa" class="form-control"
+value="{{student.gpa}}" required>
+</div>
+
+<div class="mb-3">
+<label class="form-label">Year of Study</label>
+<input name="yearOfStudy" class="form-control"
+value="{{student.yearOfStudy}}" required>
+</div>
+
+<div class="mb-3">
+<label class="form-label">Upload / Update Resume</label>
+<input type="file" name="resume" class="form-control">
+</div>
+
+{% if student.resume %}
+<div class="mb-3">
+<label class="form-label">Current Resume</label>
+<br>
+
+<a href="/resume/{{student.resume}}" 
+class="btn btn-primary btn-sm"
+target="_blank">
+View Resume
+</a>
+
+</div>
+{% endif %}
+
+<button class="btn btn-success">
+Update Profile
+</button>
+
+</form>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
 </div>
 
 </body>

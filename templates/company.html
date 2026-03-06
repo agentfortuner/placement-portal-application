@@ -10,7 +10,6 @@
 <div class="container-fluid">
 <div class="row">
 
-<!-- Sidebar -->
 <div class="col-md-3 col-lg-2 bg-dark text-white min-vh-100 p-3">
 
 <h5 class="mb-4">Company Panel</h5>
@@ -26,38 +25,31 @@
 </li>
 
 <li class="nav-item mb-2">
-<a href="/company/drives" class="nav-link text-white">Drives</a>
-</li>
-
-<li class="nav-item mb-2">
-<a href="/company/create-drive" class="nav-link text-white">Create Drive</a>
+<a href="/company/drives" class="nav-link text-white">Placement Drives</a>
 </li>
 
 <li class="nav-item mb-2">
 <a href="/company/applications" class="nav-link text-white">Applications</a>
 </li>
 
-<hr class="bg-light">
-
 <li class="nav-item">
-<a href="/login" class="nav-link text-danger">Logout</a>
+<a href="/logout" class="nav-link text-danger">Logout</a>
 </li>
 
 </ul>
 
 </div>
 
-<!-- Main Content -->
 <div class="col-md-9 col-lg-10 p-4">
 
 <h4>Company Dashboard</h4>
 
-<div class="row">
+<div class="row mt-4">
 
 <div class="col-md-4">
 <div class="card text-center shadow-sm">
 <div class="card-body">
-<h6>Total Drives</h6>
+<h6>Drives Created</h6>
 <h3>{{drives}}</h3>
 </div>
 </div>
@@ -66,8 +58,17 @@
 <div class="col-md-4">
 <div class="card text-center shadow-sm">
 <div class="card-body">
-<h6>Total Applications</h6>
+<h6>Applications Received</h6>
 <h3>{{applications}}</h3>
+</div>
+</div>
+</div>
+
+<div class="col-md-4">
+<div class="card text-center shadow-sm">
+<div class="card-body">
+<h6>Shortlisted Candidates</h6>
+<h3>{{shortlisted}}</h3>
 </div>
 </div>
 </div>

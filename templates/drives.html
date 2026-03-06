@@ -15,27 +15,49 @@
 <h5 class="mb-4">Manager Panel</h5>
 
 <ul class="nav flex-column">
-<li class="nav-item mb-2"><a href="/manager" class="nav-link text-white">Dashboard</a></li>
-<li class="nav-item mb-2"><a href="/manager/companies" class="nav-link text-white">Companies</a></li>
-<li class="nav-item mb-2"><a href="/manager/students" class="nav-link text-white">Students</a></li>
-<li class="nav-item mb-2"><a href="/manager/drives" class="nav-link text-white">Drives</a></li>
-<li class="nav-item"><a href="/logout" class="nav-link text-danger">Logout</a> </li>
+
+<li class="nav-item mb-2">
+<a href="/manager" class="nav-link text-white">Dashboard</a>
+</li>
+
+<li class="nav-item mb-2">
+<a href="/manager/companies" class="nav-link text-white">Companies</a>
+</li>
+
+<li class="nav-item mb-2">
+<a href="/manager/students" class="nav-link text-white">Students</a>
+</li>
+
+<li class="nav-item mb-2">
+<a href="/manager/drives" class="nav-link text-white">Drives</a>
+</li>
+
+<li class="nav-item">
+<a href="/logout" class="nav-link text-danger">Logout</a>
+</li>
+
 </ul>
 
 </div>
+
 
 <div class="col-md-9 col-lg-10 p-4">
 
 <h4>Placement Drives</h4>
 
-<table class="table table-bordered">
+<table class="table table-bordered table-striped">
 
+<thead>
 <tr>
 <th>Company</th>
 <th>Title</th>
 <th>Deadline</th>
-<th>Details</th>
+<th>Status</th>
+<th>Actions</th>
 </tr>
+</thead>
+
+<tbody>
 
 {% for drive in drives %}
 
@@ -46,14 +68,79 @@
 <td>{{drive.applicationDeadline}}</td>
 
 <td>
-<a href="/manager/company/{{drive.company.id}}" class="btn btn-primary btn-sm">
-Company Details
+
+{% if drive.adminStatus == "Pending" %}
+<span class="badge bg-warning text-dark">Pending</span>
+
+{% elif drive.adminStatus == "Approved" %}
+<span class="badge bg-success">Approved</span>
+
+{% elif drive.adminStatus == "Rejected" %}
+<span class="badge bg-danger">Rejected</span>
+
+{% endif %}
+
+</td>
+
+<td>
+
+<a href="/manager/company/{{drive.company.id}}" 
+class="btn btn-primary btn-sm">
+Company
 </a>
+
+<div class="mt-1">
+
+<!-- Pending -->
+{% if drive.adminStatus == "Pending" %}
+
+<a href="/manager/drive/approve/{{drive.id}}" 
+class="btn btn-success btn-sm">
+Approve
+</a>
+
+<a href="/manager/drive/reject/{{drive.id}}" 
+class="btn btn-danger btn-sm">
+Reject
+</a>
+
+<!-- Approved -->
+{% elif drive.adminStatus == "Approved" %}
+
+<a href="/manager/drive/reject/{{drive.id}}" 
+class="btn btn-danger btn-sm">
+Reject
+</a>
+
+<a href="/manager/drive/pending/{{drive.id}}" 
+class="btn btn-warning btn-sm">
+Revert
+</a>
+
+<!-- Rejected -->
+{% elif drive.adminStatus == "Rejected" %}
+
+<a href="/manager/drive/approve/{{drive.id}}" 
+class="btn btn-success btn-sm">
+Approve
+</a>
+
+<a href="/manager/drive/pending/{{drive.id}}" 
+class="btn btn-warning btn-sm">
+Revert
+</a>
+
+{% endif %}
+
+</div>
+
 </td>
 
 </tr>
 
 {% endfor %}
+
+</tbody>
 
 </table>
 
