@@ -1,4 +1,4 @@
-from flask import request, render_template, redirect, flash, session
+from flask import request, render_template, redirect, flash, session, jsonify, request
 from flask_login import login_user, logout_user, login_required, current_user
 from application.database import db
 from application.models import Application, User, Company, Student, Drive
@@ -864,3 +864,47 @@ def logout():
     flash("Logged out successfully", "success")
 
     return redirect("/login")
+
+
+
+
+#API CODE HERE
+
+@app.route("/api/companies", methods=["POST"])
+def api_companies():
+
+    username = request.json.get("username")
+    password = request.json.get("password")
+
+    manager = User.query.filter_by(
+        username=username,
+        type="manager"
+    ).first()
+
+    # Validate manager credentials
+    if not manager or manager.password != password:
+        return jsonify({
+            "status": "error",
+            "message": "Invalid manager credentials"
+        }), 401
+
+    companies = Company.query.all()
+
+    company_list = []
+
+    for company in companies:
+        company_list.append({
+            "id": company.id,
+            "name": company.name,
+            "email": company.email,
+            "category": company.category,
+            "scale": company.scale,
+            "status": company.status,
+            "website": company.website
+        })
+
+    return jsonify({
+        "status": "success",
+        "total_companies": len(company_list),
+        "companies": company_list
+    })
