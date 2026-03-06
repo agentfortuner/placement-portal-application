@@ -908,3 +908,178 @@ def api_companies():
         "total_companies": len(company_list),
         "companies": company_list
     })
+
+# API endpoint to get all students (for manager)
+
+@app.route("/api/students", methods=["POST"])
+def api_students():
+
+    username = request.json.get("username")
+    password = request.json.get("password")
+
+    manager = User.query.filter_by(
+        username=username,
+        type="manager"
+    ).first()
+
+    if not manager or manager.password != password:
+        return jsonify({
+            "status": "error",
+            "message": "Invalid manager credentials"
+        }), 401
+
+    students = Student.query.join(User).all()
+
+    student_list = []
+
+    for student in students:
+
+        student_list.append({
+            "id": student.id,
+            "name": student.user.name,
+            "email": student.user.email,
+            "rollNumber": student.rollNumber,
+            "department": student.department,
+            "gpa": student.gpa,
+            "yearOfStudy": student.yearOfStudy
+        })
+
+    return jsonify({
+        "status": "success",
+        "total_students": len(student_list),
+        "students": student_list
+    })
+
+# API endpoint to get all drives (for manager)
+@app.route("/api/drives", methods=["POST"])
+def api_drives():
+
+    username = request.json.get("username")
+    password = request.json.get("password")
+
+    manager = User.query.filter_by(
+        username=username,
+        type="manager"
+    ).first()
+
+    if not manager or manager.password != password:
+        return jsonify({
+            "status": "error",
+            "message": "Invalid manager credentials"
+        }), 401
+
+    drives = Drive.query.join(Company).all()
+
+    drive_list = []
+
+    for drive in drives:
+
+        drive_list.append({
+            "id": drive.id,
+            "company": drive.company.name,
+            "title": drive.title,
+            "salary": drive.salary,
+            "skillsRequired": drive.skillsRequired,
+            "vacancy": drive.vacancy,
+            "location": drive.location,
+            "applicationDeadline": drive.applicationDeadline,
+            "status": drive.adminStatus,
+            "hiringStatus": drive.hiringStatus
+        })
+
+    return jsonify({
+        "status": "success",
+        "total_drives": len(drive_list),
+        "drives": drive_list
+    })
+
+# API endpoint to get all drives (for manager)
+@app.route("/api/applications", methods=["POST"])
+def api_applications():
+
+    username = request.json.get("username")
+    password = request.json.get("password")
+
+    manager = User.query.filter_by(
+        username=username,
+        type="manager"
+    ).first()
+
+    if not manager or manager.password != password:
+        return jsonify({
+            "status": "error",
+            "message": "Invalid manager credentials"
+        }), 401
+
+    applications = Application.query.join(Student).join(User).join(Drive).join(Company).all()
+
+    application_list = []
+
+    for app in applications:
+
+        application_list.append({
+            "application_id": app.id,
+            "student_name": app.student.user.name,
+            "student_email": app.student.user.email,
+            "rollNumber": app.student.rollNumber,
+            "company": app.drive.company.name,
+            "drive_title": app.drive.title,
+            "department": app.department,
+            "gpa": app.gpa,
+            "application_date": app.applicationDate,
+            "status": app.status
+        })
+
+    return jsonify({
+        "status": "success",
+        "total_applications": len(application_list),
+        "applications": application_list
+    })
+
+@app.route("/api/student/applications", methods=["POST"])
+def api_student_applications():
+
+    username = request.json.get("username")
+    password = request.json.get("password")
+
+    # Find user
+    user = User.query.filter_by(username=username, type="student").first()
+
+    if not user or user.password != password:
+        return jsonify({
+            "status": "error",
+            "message": "Invalid credentials"
+        }), 401
+
+    # Get student record
+    student = Student.query.filter_by(userId=user.id).first()
+
+    if not student:
+        return jsonify({
+            "status": "error",
+            "message": "Student profile not found"
+        })
+
+    # Get applications
+    applications = Application.query.filter_by(studentId=student.id).all()
+
+    application_list = []
+
+    for app in applications:
+
+        application_list.append({
+            "application_id": app.id,
+            "company": app.drive.company.name,
+            "drive_title": app.drive.title,
+            "salary": app.drive.salary,
+            "location": app.drive.location,
+            "application_date": app.applicationDate,
+            "status": app.status
+        })
+
+    return jsonify({
+        "status": "success",
+        "student": user.name,
+        "total_applications": len(application_list),
+        "applications": application_list
+    })
