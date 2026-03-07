@@ -238,6 +238,10 @@ def login():
 @login_required
 def manager_dashboard():
 
+    if current_user.type != "manager":
+        flash("Access denied", "danger")
+        return redirect("/login")
+
     # Dashboard counts
     students = Student.query.count()
     companies = Company.query.count()
@@ -339,6 +343,9 @@ def manager_companies():
 @app.route("/manager/company/<int:id>")
 @login_required
 def company_details(id):
+    if current_user.type != "manager":
+        flash("Access denied", "danger")
+        return redirect("/login")
 
     company = Company.query.get_or_404(id)
 
@@ -412,6 +419,9 @@ def whitelist_company(id):
 @app.route("/manager/students")
 @login_required
 def manager_students():
+    if current_user.type != "manager":
+        flash("Access denied", "danger")
+        return redirect("/login")
 
     students = User.query.filter_by(type="student").all()
 
@@ -491,6 +501,9 @@ def view_drive(id):
 @app.route("/manager/drive/approve/<int:id>")
 @login_required
 def approve_drive(id):
+    if current_user.type != "manager":
+        flash("Access denied", "danger")
+        return redirect("/login")
 
     drive = Drive.query.get_or_404(id)
 
@@ -522,6 +535,9 @@ def reject_drive(id):
 @app.route("/manager/drive/pending/<int:id>")
 @login_required
 def revert_drive_pending(id):
+    if current_user.type != "manager":
+        flash("Access denied", "danger")
+        return redirect("/login")
 
     drive = Drive.query.get_or_404(id)
 
@@ -538,6 +554,8 @@ def revert_drive_pending(id):
 @app.route("/student")
 @login_required
 def student_dashboard():
+    if current_user.type != "student":
+        return redirect("/login")
 
     student = Student.query.filter_by(userId=current_user.id).first()
 
@@ -577,6 +595,9 @@ def student_dashboard():
 @app.route("/student/drives")
 @login_required
 def student_drives():
+    if current_user.type != "student":
+        return redirect("/login")
+
 
     search = request.args.get("search")
 
@@ -608,6 +629,9 @@ def student_drives():
 @app.route("/student/applications")
 @login_required
 def student_applications():
+    if current_user.type != "student":
+        return redirect("/login")
+
 
     student = Student.query.filter_by(userId=current_user.id).first()
 
@@ -623,6 +647,9 @@ def student_applications():
 @app.route("/student/apply/<int:drive_id>")
 @login_required
 def apply_drive(drive_id):
+    if current_user.type != "student":
+        return redirect("/login")
+
 
     student = Student.query.filter_by(userId=current_user.id).first()
 
@@ -683,6 +710,9 @@ def apply_drive(drive_id):
 @app.route("/student/revert/<int:drive_id>")
 @login_required
 def student_revert_application(drive_id):
+    if current_user.type != "student":
+        return redirect("/login")
+
 
     student = Student.query.filter_by(userId=current_user.id).first()
 
@@ -714,6 +744,9 @@ def student_revert_application(drive_id):
 @app.route("/student/profile", methods=["GET", "POST"])
 @login_required
 def view_student_profile():
+    if current_user.type != "student":
+        return redirect("/login")
+
 
     student = Student.query.filter_by(userId=current_user.id).first()
 
@@ -734,7 +767,7 @@ def view_student_profile():
             flash("All fields are required", "danger")
             return redirect("/student/profile")
         try:
-            gpa = float(gpa)
+            gpa = float(student.gpa)
             if gpa < 0 or gpa > 10:
                 flash("GPA must be between 0 and 10", "danger")
                 return redirect("/student/profile")
@@ -756,6 +789,7 @@ def view_student_profile():
 @app.route("/company")
 @login_required
 def company_dashboard():
+
 
     company = Company.query.get(current_user.id)
 
