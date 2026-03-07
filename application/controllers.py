@@ -4,7 +4,9 @@ from application.database import db
 from application.models import Application, User, Company, Student, Drive
 from app import app
 from datetime import datetime
-import os
+import os, json
+from sqlalchemy import func
+import json
 
 # HOME PAGE
 @app.route("/home")

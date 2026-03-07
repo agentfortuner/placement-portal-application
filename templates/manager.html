@@ -295,75 +295,74 @@ Search
 
 
 <!-- Chart Scripts -->
-<!-- 
 <script>
+document.addEventListener("DOMContentLoaded", function() {
+    // 1. Department Pie Chart
+    const deptCtx = document.getElementById("deptChart");
+    if (deptCtx) {
+        new Chart(deptCtx, {
+            type: "pie",
+            data: {
+                labels: {{ dept_labels | safe }},
+                datasets: [{
+                    data: {{ dept_values | safe }},
+                    backgroundColor: ["#FF6384","#36A2EB","#FFCE56","#4BC0C0","#9966FF"]
+                }]
+            }
+        });
+    }
 
-document.addEventListener("DOMContentLoaded", function(){
+    // 2. Company Pie Chart
+    const compCtx = document.getElementById("companyChart");
+    if (compCtx) {
+        new Chart(compCtx, {
+            type: "pie",
+            data: {
+                labels: {{ company_labels | safe }},
+                datasets: [{
+                    data: {{ company_values | safe }},
+                    backgroundColor: ["#FF9F40","#4BC0C0","#9966FF","#FF6384"]
+                }]
+            }
+        });
+    }
 
-// Department Pie Chart
-new Chart(document.getElementById("deptChart"),{
-type:"pie",
-data:{
-labels: {{ dept_labels | safe }},
-datasets:[{
-data: {{ dept_values | safe }},
-backgroundColor:["#FF6384","#36A2EB","#FFCE56","#4BC0C0","#9966FF"]
-}]
-}
+    // 3. Daily Applications Line Chart
+    const appCtx = document.getElementById("applicationChart");
+    if (appCtx) {
+        new Chart(appCtx, {
+            type: "line",
+            data: {
+                labels: {{ application_dates | safe }},
+                datasets: [{
+                    label: "Applications",
+                    data: {{ application_counts | safe }},
+                    borderColor: "#36A2EB",
+                    fill: false,
+                    tension: 0.3
+                }]
+            },
+            options: { scales: { y: { beginAtZero: true } } }
+        });
+    }
+
+    // 4. Placement Success Chart
+    const placeCtx = document.getElementById("placementChart");
+    if (placeCtx) {
+        new Chart(placeCtx, {
+            type: "bar",
+            data: {
+                labels: {{ placement_labels | safe }},
+                datasets: [{
+                    label: "Placement Results",
+                    data: {{ placement_values | safe }},
+                    backgroundColor: ["#4CAF50","#F44336"]
+                }]
+            }
+        });
+    }
 });
-
-
-// Company Pie Chart
-new Chart(document.getElementById("companyChart"),{
-type:"pie",
-data:{
-labels: {{ company_labels | safe }},
-datasets:[{
-data: {{ company_values | safe }},
-backgroundColor:["#FF9F40","#4BC0C0","#9966FF","#FF6384"]
-}]
-}
-});
-
-
-// Daily Applications Line Chart
-new Chart(document.getElementById("applicationChart"),{
-type:"line",
-data:{
-labels: {{ application_dates | safe }},
-datasets:[{
-label:"Applications",
-data: {{ application_counts | safe }},
-borderColor:"#36A2EB",
-fill:false,
-tension:0.3
-}]
-},
-options:{
-scales:{
-y:{beginAtZero:true}
-}
-}
-});
-
-
-// Placement Success Chart
-new Chart(document.getElementById("placementChart"),{
-type:"bar",
-data:{
-labels: {{ placement_labels | safe }},
-datasets:[{
-label:"Placement Results",
-data: {{ placement_values | safe }},
-backgroundColor:["#4CAF50","#F44336"]
-}]
-}
-});
-
-});
-
-
-</script> -->
+</script>
 
 </body>
 </html>
