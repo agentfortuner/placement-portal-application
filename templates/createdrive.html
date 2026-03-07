@@ -2,6 +2,7 @@
 <html>
 <head>
 <title>Create Drive</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
@@ -48,32 +49,96 @@
 
 <form method="POST">
 
-<input name="title" class="form-control mb-3" placeholder="Job Title">
+<input 
+name="title" 
+class="form-control mb-3" 
+placeholder="Job Title"
+required
+minlength="3"
+maxlength="100"
+pattern="[A-Za-z0-9\s\-]+"
+title="Job title must be 3–100 characters and contain letters, numbers or hyphens">
 
-<textarea name="description" class="form-control mb-3" placeholder="Job Description"></textarea>
+<textarea 
+name="description" 
+class="form-control mb-3" 
+placeholder="Job Description"
+required
+minlength="20"
+maxlength="1000"
+title="Description should be between 20 and 1000 characters"></textarea>
 
-<textarea name="eligibilityCriteria" class="form-control mb-3" placeholder="Eligibility Criteria"></textarea>
+<textarea 
+name="eligibilityCriteria" 
+class="form-control mb-3" 
+placeholder="Eligibility Criteria"
+required
+minlength="10"
+maxlength="500"
+title="Eligibility criteria should be between 10 and 500 characters"></textarea>
 
-<input name="salary" class="form-control mb-3" placeholder="Salary Package">
+<input 
+name="salary" 
+class="form-control mb-3" 
+placeholder="Salary Package"
+required
+pattern="[0-9]+"
+title="Salary must contain numbers only (annual package)">
 
-<input name="skillsRequired" class="form-control mb-3" placeholder="Required Skills">
+<input 
+name="skillsRequired" 
+class="form-control mb-3" 
+placeholder="Required Skills (comma separated)"
+required
+pattern="[A-Za-z,\s]+"
+title="Enter skills separated by commas">
 
-<input name="experienceRequired" class="form-control mb-3" placeholder="Experience Required">
+<input 
+name="experienceRequired" 
+class="form-control mb-3" 
+placeholder="Experience Required"
+required
+pattern="[A-Za-z0-9\s\-]+"
+title="Enter experience in years">
 
-<input name="vacancy" type="number" class="form-control mb-3" placeholder="Number of Vacancies">
+<input 
+name="vacancy" 
+type="number" 
+class="form-control mb-3" 
+placeholder="Number of Vacancies"
+required
+min="1"
+max="1000">
 
-<input name="location" class="form-control mb-3" placeholder="Job Location">
+<input 
+name="location" 
+class="form-control mb-3" 
+placeholder="Job Location"
+required
+pattern="[A-Za-z\s]+"
+title="Location should contain letters only">
 
-<input type="date" name="applicationDeadline" class="form-control mb-3">
+<input 
+type="date" 
+name="applicationDeadline" 
+class="form-control mb-3"
+required>
 
-<input type="number" name="interviewrounds" class="form-control mb-3" placeholder="Interview Rounds" value="2">
+<input 
+type="number" 
+name="interviewrounds" 
+class="form-control mb-3" 
+placeholder="Interview Rounds"
+value="2"
+required
+min="1"
+max="10">
 
 <button class="btn btn-primary">
 Create Drive
 </button>
 
 </form>
-
 </div>
 
 </div>

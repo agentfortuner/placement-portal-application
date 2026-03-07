@@ -54,9 +54,16 @@
 
 <form method="GET" class="mb-3">
 
-<input name="search" class="form-control"
+<input 
+name="search"
+class="form-control"
 placeholder="Search by company, job title or skills"
-value="{{request.args.get('search','')}}">
+value="{{request.args.get('search','')}}"
+required
+minlength="2"
+maxlength="60"
+pattern="[A-Za-z0-9\s\.\-]+"
+title="Enter 2–60 characters. Only letters, numbers, spaces, dots, and hyphens allowed">
 
 </form>
 
@@ -69,7 +76,7 @@ value="{{request.args.get('search','')}}">
 <th>Skills</th>
 <th>Salary</th>
 <th>Location</th>
-<th>Status / Action</th>
+<th>Status</th>
 </tr>
 </thead>
 

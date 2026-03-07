@@ -1,4 +1,4 @@
-from flask import request, render_template, redirect, flash, session, jsonify, request
+from flask import request, render_template, redirect, flash, session, jsonify, send_from_directory
 from flask_login import login_user, logout_user, login_required, current_user
 from application.database import db
 from application.models import Application, User, Company, Student, Drive
@@ -24,32 +24,75 @@ def student_register():
 
     if request.method == "POST":
 
+        name = request.form.get("name")
+        email = request.form.get("email")
+        username = request.form.get("username")
+        password = request.form.get("password")
+        roll = request.form.get("rollNumber")
+        dept = request.form.get("department")
+        gpa = request.form.get("gpa")
+        year = request.form.get("yearOfStudy")
+
+        # ---- REQUIRED FIELD VALIDATION ----
+        if not all([name,email,username,password,roll,dept,gpa,year]):
+            flash("All fields are required", "danger")
+            return redirect("/register-student")
+
+        # ---- GPA VALIDATION ----
+        try:
+            gpa = float(gpa)
+            if gpa < 0 or gpa > 10:
+                flash("GPA must be between 0 and 10", "danger")
+                return redirect("/register-student")
+        except:
+            flash("Invalid GPA format", "danger")
+            return redirect("/register-student")
+
+        # ---- USERNAME UNIQUE CHECK ----
+        if User.query.filter_by(username=username).first():
+            flash("Username already exists", "danger")
+            return redirect("/register-student")
+
+        # ---- EMAIL UNIQUE CHECK ----
+        if User.query.filter_by(email=email).first():
+            flash("Email already registered", "danger")
+            return redirect("/register-student")
+
         user = User(
-            name=request.form["name"],
-            email=request.form["email"],
-            username=request.form["username"],
-            password=request.form["password"],
+            name=name,
+            email=email,
+            username=username,
+            password=password,
             type="student"
         )
 
         db.session.add(user)
         db.session.commit()
 
-        resume_file = request.files["resume"]
+        # resume upload handling
+        resume_file = request.files.get("resume")
+        filename = None
 
-        filename = f"{user.id}_{resume_file.filename}"
-    
         if resume_file and resume_file.filename != "":
-            filename = resume_file.filename
+
+            allowed = ["pdf","doc","docx"]
+            ext = resume_file.filename.split(".")[-1].lower()
+
+            if ext not in allowed:
+                flash("Resume must be PDF or DOC/DOCX", "danger")
+                return redirect("/register-student")
+
+            filename = f"{user.id}_{resume_file.filename}"
+
             path = os.path.join("application/static/resumes", filename)
             resume_file.save(path)
 
         student = Student(
             userId=user.id,
-            rollNumber=request.form["rollNumber"],
-            department=request.form["department"],
-            gpa=request.form["gpa"],
-            yearOfStudy=request.form["yearOfStudy"],
+            rollNumber=roll,
+            department=dept,
+            gpa=gpa,
+            yearOfStudy=year,
             resume=filename
         )
 
@@ -62,8 +105,6 @@ def student_register():
 
     return render_template("studentreg.html")
 
-
-from flask import send_from_directory
 
 @app.route("/resume/<filename>")
 def view_resume(filename):
@@ -92,7 +133,13 @@ def company_register():
             address=request.form.get("address"),
             locations=request.form.get("locations")
         )
-
+        if not request.form.get("name") or not request.form.get("email"):
+                        flash("Company name and email required", "danger")
+                        return redirect("/register-company")
+                    
+        if Company.query.filter_by(username=request.form.get("username")).first():
+                        flash("Username already exists", "danger")
+                        return redirect("/register-company")
         try:
             db.session.add(new_company)
             db.session.commit()
@@ -114,9 +161,13 @@ def login():
         username = request.form["username"]
         pwd = request.form["password"]
 
+        if not username or not pwd:
+            flash("Username and password required", "danger")
+            return redirect("/login")
+
         this_user = User.query.filter_by(username=username).first()
         this_company = Company.query.filter_by(username=username).first()
-
+         
         # COMPANY LOGIN
         if this_company:
 
@@ -180,17 +231,15 @@ def login():
 
 
 #MANAGER DASHBOARD
+
 @app.route("/manager")
 @login_required
 def manager_dashboard():
 
+    # Dashboard counts
     students = Student.query.count()
     companies = Company.query.count()
     drives = Drive.query.count()
-    applications = Application.query.count()
-
-    upcoming_drives = Drive.query.filter_by(hiringStatus="Hiring").all()
-    past_drives = Drive.query.filter_by(hiringStatus="Closed").all()
 
     query = request.args.get("query")
 
@@ -198,6 +247,7 @@ def manager_dashboard():
     company_results = []
 
     if query:
+        
         student_results = Student.query.join(User).filter(
             User.name.ilike(f"%{query}%")
         ).all()
@@ -206,16 +256,69 @@ def manager_dashboard():
             Company.name.ilike(f"%{query}%")
         ).all()
 
+    #Upcoming and past drives
+    today = datetime.now()
+
+    upcoming_drives = Drive.query.filter(
+        Drive.applicationDeadline >= today
+    ).all()
+
+    past_drives = Drive.query.filter(
+        Drive.applicationDeadline < today
+    ).all()
+
+    #DEPT Distribution
+    dept_data = db.session.query(
+        Student.department,
+        func.count(Student.id)
+    ).group_by(Student.department).all()
+
+    dept_labels = [d[0] for d in dept_data]
+    dept_values = [d[1] for d in dept_data]
+
+    #Company Distribution
+    company_data = db.session.query(
+        Company.scale,
+        func.count(Company.id)
+    ).group_by(Company.scale).all()
+
+    company_labels = [c[0] for c in company_data]
+    company_values = [c[1] for c in company_data]
+
+    
+    # Daily Applications
+    application_data = db.session.query(
+        func.date(Application.applicationDate),
+        func.count(Application.id)
+    ).group_by(func.date(Application.applicationDate)).all()
+
+    application_dates = [str(a[0]) for a in application_data]
+    application_counts = [a[1] for a in application_data]
+
+    placement_data = db.session.query(Application.status,func.count(Application.id)).filter(Application.status.in_(["Selected","Rejected"])).group_by(Application.status).all()
+    placement_labels = [p[0] for p in placement_data]
+    placement_values = [p[1] for p in placement_data]
+
     return render_template(
         "manager.html",
         students=students,
         companies=companies,
         drives=drives,
-        applications=applications,
+        student_results=student_results,
+        company_results=company_results,
         upcoming_drives=upcoming_drives,
         past_drives=past_drives,
-        student_results=student_results,
-        company_results=company_results
+
+        dept_labels=json.dumps(dept_labels),
+        dept_values=json.dumps(dept_values),
+
+        company_labels=json.dumps(company_labels),
+        company_values=json.dumps(company_values),
+
+        application_dates=json.dumps(application_dates),
+        application_counts=json.dumps(application_counts),
+        placement_labels=json.dumps(placement_labels),
+        placement_values=json.dumps(placement_values)
     )
 
 #MANAGER DASHBOARD - COMPANY DETAILS
@@ -469,40 +572,36 @@ def student_dashboard():
         placements=placements,
         notifications=notifications
     )
-
 @app.route("/student/drives")
 @login_required
 def student_drives():
 
-    student = Student.query.filter_by(userId=current_user.id).first()
-
     search = request.args.get("search")
 
-    query = Drive.query.filter(
-        Drive.adminStatus == "Approved",
-        Drive.hiringStatus == "Hiring"
-    )
-
     if search:
-        query = query.filter(
+        drives = Drive.query.join(Company).filter(
+            (Company.name.ilike(f"%{search}%")) |
             (Drive.title.ilike(f"%{search}%")) |
-            (Drive.skillsRequired.ilike(f"%{search}%")) |
-            (Drive.location.ilike(f"%{search}%"))
-        )
-
-    drives = query.all()
+            (Drive.skillsRequired.ilike(f"%{search}%"))
+        ).all()
+    else:
+        drives = Drive.query.all()
 
     applications = Application.query.filter_by(
-        studentId=student.id
+        studentId=current_user.student.id
     ).all()
 
-    applied = {app.driveId: app.status for app in applications}
+    applied = {}
+
+    for app in applications:
+        applied[app.driveId] = app.status
 
     return render_template(
         "applydrives.html",
         drives=drives,
         applied=applied
     )
+
 
 @app.route("/student/applications")
 @login_required
@@ -610,7 +709,6 @@ def student_revert_application(drive_id):
 
     return redirect("/student/drives")
 
-
 @app.route("/student/profile", methods=["GET", "POST"])
 @login_required
 def view_student_profile():
@@ -619,9 +717,10 @@ def view_student_profile():
 
     if request.method == "POST":
 
-        student.department = request.form["department"]
-        student.gpa = request.form["gpa"]
-        student.skills = request.form["skills"]
+        student.department = request.form.get("department")
+        student.gpa = request.form.get("gpa")
+        student.skills = request.form.get("skills")
+        student.yearOfStudy = request.form.get("yearOfStudy")
 
         resume = request.files.get("resume")
 
@@ -629,6 +728,17 @@ def view_student_profile():
             path = os.path.join("application/static/resumes", resume.filename)
             resume.save(path)
             student.resume = resume.filename
+        if not student.department or not student.gpa or not student.yearOfStudy:
+            flash("All fields are required", "danger")
+            return redirect("/student/profile")
+        try:
+            gpa = float(gpa)
+            if gpa < 0 or gpa > 10:
+                flash("GPA must be between 0 and 10", "danger")
+                return redirect("/student/profile")
+        except:
+            flash("Invalid GPA format", "danger")
+            return redirect("/student/profile")
 
         db.session.commit()
 
@@ -737,6 +847,17 @@ def create_drive():
             adminStatus="Pending",
             interviewrounds=request.form["interviewrounds"]
         )
+        if not drive.title or not drive.salary or not drive.vacancy or not drive.applicationDeadline:
+             flash("All fields are required", "danger")
+             return redirect("/company/drive/create")
+        try:
+            vacancy = int(drive.vacancy)
+            if vacancy <= 0:
+                flash("Vacancy must be positive", "danger")
+                return redirect("/company/drive/create")
+        except ValueError:
+            flash("Invalid vacancy number", "danger")
+            return redirect("/company/drive/create")
 
         db.session.add(drive)
         db.session.commit()
@@ -927,7 +1048,7 @@ def api_students():
             "status": "error",
             "message": "Invalid manager credentials"
         }), 401
-
+    
     students = Student.query.join(User).all()
 
     student_list = []

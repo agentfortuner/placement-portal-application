@@ -24,103 +24,164 @@
               {% endif %}
             {% endwith %}
 
-            <form method="POST">
+           <form method="POST">
 
-                <div class="row">
+<div class="row">
 
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label">Company Name</label>
-                        <input type="text" class="form-control" name="name" required>
-                    </div>
+<div class="col-md-6 mb-3">
+<label class="form-label">Company Name</label>
+<input 
+type="text" 
+class="form-control" 
+name="name"
+required
+minlength="2"
+maxlength="100"
+pattern="[A-Za-z0-9\s&.,'-]+"
+title="Company name should be 2–100 characters and may contain letters, numbers, spaces, &, ., , ' or -">
+</div>
 
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label">Username</label>
-                        <input type="text" class="form-control" name="username" required>
-                    </div>
+<div class="col-md-6 mb-3">
+<label class="form-label">Username</label>
+<input 
+type="text" 
+class="form-control" 
+name="username"
+required
+minlength="4"
+maxlength="30"
+pattern="[A-Za-z0-9_]+"
+title="Username must contain only letters, numbers or underscores">
+</div>
 
-                </div>
+</div>
 
-                <div class="mb-3">
-                    <label class="form-label">Official Email</label>
-                    <input type="email" class="form-control" name="email" required>
-                </div>
+<div class="mb-3">
+<label class="form-label">Official Email</label>
+<input 
+type="email" 
+class="form-control" 
+name="email"
+required
+maxlength="120">
+</div>
 
-                <div class="mb-4">
-                    <label class="form-label">Password</label>
-                    <input type="password" class="form-control" name="password" required>
-                </div>
+<div class="mb-4">
+<label class="form-label">Password</label>
+<input 
+type="password" 
+class="form-control" 
+name="password"
+required
+minlength="6"
+maxlength="50"
+title="Password must be at least 6 characters">
+</div>
 
-                <div class="row">
+<div class="row">
 
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label">Contact Person Name</label>
-                        <input type="text" class="form-control" name="contactName">
-                    </div>
+<div class="col-md-6 mb-3">
+<label class="form-label">Contact Person Name</label>
+<input 
+type="text" 
+class="form-control" 
+name="contactName"
+pattern="[A-Za-z\s]+"
+title="Only letters and spaces allowed">
+</div>
 
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label">Contact Email</label>
-                        <input type="email" class="form-control" name="contactEmail" required>
-                    </div>
+<div class="col-md-6 mb-3">
+<label class="form-label">Contact Email</label>
+<input 
+type="email" 
+class="form-control" 
+name="contactEmail"
+required
+maxlength="120">
+</div>
 
-                </div>
+</div>
 
-                <div class="row">
+<div class="row">
 
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label">Company Category</label>
-                        <select class="form-select" name="category" required>
-                            <option value="">Select</option>
-                            <option value="Gold">Gold</option>
-                            <option value="Silver">Silver</option>
-                            <option value="Base">Base</option>
-                            <option value="Startup">Startup</option>
-                        </select>
-                    </div>
+<div class="col-md-6 mb-3">
+<label class="form-label">Company Category</label>
+<select class="form-select" name="category" required>
+<option value="">Select</option>
+<option value="Gold">Gold</option>
+<option value="Silver">Silver</option>
+<option value="Base">Base</option>
+<option value="Startup">Startup</option>
+</select>
+</div>
 
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label">Company Scale</label>
-                        <select class="form-select" name="scale" required>
-                            <option value="">Select</option>
-                            <option value="Small">Small</option>
-                            <option value="Medium">Medium</option>
-                            <option value="Large">Large</option>
-                            <option value="MNC">MNC</option>
-                        </select>
-                    </div>
+<div class="col-md-6 mb-3">
+<label class="form-label">Company Scale</label>
+<select class="form-select" name="scale" required>
+<option value="">Select</option>
+<option value="Small">Small</option>
+<option value="Medium">Medium</option>
+<option value="Large">Large</option>
+<option value="MNC">MNC</option>
+</select>
+</div>
 
-                </div>
+</div>
 
-                <div class="mb-3">
-                    <label class="form-label">Company Description</label>
-                    <textarea class="form-control" name="description" rows="3"></textarea>
-                </div>
+<div class="mb-3">
+<label class="form-label">Company Description</label>
+<textarea 
+class="form-control" 
+name="description" 
+rows="3"
+maxlength="500"
+minlength="20"
+title="Description should be between 20 and 500 characters"></textarea>
+</div>
 
-                <div class="mb-3">
-                    <label class="form-label">Placement History</label>
-                    <textarea class="form-control" name="placementHistory" rows="2"></textarea>
-                </div>
+<div class="mb-3">
+<label class="form-label">Placement History</label>
+<textarea 
+class="form-control" 
+name="placementHistory" 
+rows="2"
+maxlength="300"></textarea>
+</div>
 
-                <div class="mb-3">
-                    <label class="form-label">Website</label>
-                    <input type="url" class="form-control" name="website">
-                </div>
+<div class="mb-3">
+<label class="form-label">Website</label>
+<input 
+type="url" 
+class="form-control" 
+name="website"
+placeholder="https://example.com">
+</div>
 
-                <div class="mb-3">
-                    <label class="form-label">Address</label>
-                    <input type="text" class="form-control" name="address">
-                </div>
+<div class="mb-3">
+<label class="form-label">Address</label>
+<input 
+type="text" 
+class="form-control" 
+name="address"
+maxlength="200">
+</div>
 
-                <div class="mb-3">
-                    <label class="form-label">Locations</label>
-                    <input type="text" class="form-control" name="locations">
-                </div>
+<div class="mb-3">
+<label class="form-label">Locations</label>
+<input 
+type="text" 
+class="form-control" 
+name="locations"
+maxlength="150"
+pattern="[A-Za-z,\s]+"
+title="Enter city names separated by commas">
+</div>
 
-                <button type="submit" class="btn btn-primary w-100">
-                    Register Company
-                </button>
+<button type="submit" class="btn btn-primary w-100">
+Register Company
+</button>
 
-            </form>
-
+</form>
             <div class="text-center mt-3">
                 <small>Already registered? <a href="/login">Login</a></small>
             </div>

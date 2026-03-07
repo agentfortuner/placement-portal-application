@@ -2,6 +2,7 @@
 <html>
 <head>
 <title>Student Profile</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
@@ -55,31 +56,72 @@
 
 <div class="mb-3">
 <label class="form-label">Roll Number</label>
-<input name="rollNumber" class="form-control"
-value="{{student.rollNumber}}" required>
+<input 
+name="rollNumber" 
+class="form-control"
+value="{{student.rollNumber}}"
+required
+pattern="[A-Za-z0-9\-]+"
+title="Roll number should contain letters, numbers or hyphens only">
 </div>
 
 <div class="mb-3">
 <label class="form-label">Department</label>
-<input name="department" class="form-control"
-value="{{student.department}}" required>
+<input 
+name="department" 
+class="form-control"
+value="{{student.department}}"
+required
+pattern="[A-Za-z\s]{2,50}"
+title="Department should contain only letters and spaces">
 </div>
 
 <div class="mb-3">
 <label class="form-label">GPA</label>
-<input name="gpa" class="form-control"
-value="{{student.gpa}}" required>
+<input 
+type="number"
+name="gpa" 
+class="form-control"
+value="{{student.gpa}}"
+required
+min="0"
+max="10"
+step="0.01"
+title="GPA must be between 0 and 10">
 </div>
 
 <div class="mb-3">
 <label class="form-label">Year of Study</label>
-<input name="yearOfStudy" class="form-control"
-value="{{student.yearOfStudy}}" required>
+<input 
+type="number"
+name="yearOfStudy" 
+class="form-control"
+value="{{student.yearOfStudy}}"
+required
+min="1"
+max="5"
+title="Year must be between 1 and 5">
+</div>
+
+<div class="mb-3">
+<label class="form-label">Skills</label>
+<input 
+name="skills"
+class="form-control"
+value="{{student.skills}}"
+required
+pattern="[A-Za-z,\s]+"
+title="Enter skills separated by commas">
 </div>
 
 <div class="mb-3">
 <label class="form-label">Upload / Update Resume</label>
-<input type="file" name="resume" class="form-control">
+<input 
+type="file" 
+name="resume" 
+class="form-control"
+accept=".pdf,.doc,.docx"
+title="Upload PDF or Word document">
 </div>
 
 {% if student.resume %}
