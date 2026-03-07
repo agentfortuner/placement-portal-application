@@ -14,7 +14,7 @@
 <div class="row">
 
 <!-- Sidebar -->
-<div class="col-md-3 col-lg-2 bg-black text-white min-vh-100 p-3">
+<div class="col-md-3 col-lg-2 bg-black text-white min-vh-100 p-3 d-none d-md-block">
 
 <h5 class="mb-4">Manager Panel</h5>
 
@@ -141,8 +141,8 @@ Search
 {% if student_results %}
 
 <h5 class="mt-4">Student Results</h5>
-
-<table class="table table-bordered table-striped">
+<div class="table-responsive">
+<table class="table table-hover align-middle">
 
 <thead>
 <tr>
@@ -177,8 +177,8 @@ Search
 {% if company_results %}
 
 <h5 class="mt-4">Company Results</h5>
-
-<table class="table table-bordered table-striped">
+<div class="table-responsive">
+<table class="table table-hover align-middle">
 
 <thead>
 <tr>
@@ -215,9 +215,8 @@ Search
 <!-- UPCOMING DRIVES -->
 
 <h5>Upcoming Drives</h5>
-
-<table class="table table-bordered">
-
+<div class="table-responsive">
+<table class="table table-hover align-middle">
 <thead>
 <tr>
 <th>Company</th>
@@ -253,9 +252,8 @@ Search
 <!-- PAST DRIVES -->
 
 <h5 class="mt-4">Past Drives</h5>
-
-<table class="table table-bordered">
-
+<div class="table-responsive">
+<table class="table table-hover align-middle">
 <thead>
 <tr>
 <th>Company</th>
