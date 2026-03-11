@@ -592,6 +592,7 @@ def student_dashboard():
         placements=placements,
         notifications=notifications
     )
+ 
 @app.route("/student/drives")
 @login_required
 def student_drives():
@@ -603,12 +604,15 @@ def student_drives():
 
     if search:
         drives = Drive.query.join(Company).filter(
-            (Company.name.ilike(f"%{search}%")) |
-            (Drive.title.ilike(f"%{search}%")) |
-            (Drive.skillsRequired.ilike(f"%{search}%"))
-        ).all()
+            Drive.adminStatus == "Approved",
+        (
+            Company.name.ilike(f"%{search}%") |
+            Drive.title.ilike(f"%{search}%") |
+            Drive.skillsRequired.ilike(f"%{search}%")
+        )
+    ).all()
     else:
-        drives = Drive.query.all()
+        drives = Drive.query.filter_by(adminStatus="Approved").all()
 
     applications = Application.query.filter_by(
         studentId=current_user.student.id
@@ -625,7 +629,7 @@ def student_drives():
         applied=applied
     )
 
-
+    
 @app.route("/student/applications")
 @login_required
 def student_applications():
@@ -747,9 +751,7 @@ def view_student_profile():
     if current_user.type != "student":
         return redirect("/login")
 
-
     student = Student.query.filter_by(userId=current_user.id).first()
-
     if request.method == "POST":
 
         student.department = request.form.get("department")
