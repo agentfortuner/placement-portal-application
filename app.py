@@ -14,11 +14,11 @@ login_manager = LoginManager()
 def create_app():
     app = Flask(__name__)
 
-    app.config['SECRET_KEY'] = "afgjke12359754iloyuremane45j"
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///placement_portal.sqlite3'
+    app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY", "afgjke12359754iloyuremane45j")
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/placement_portal.sqlite3'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-    app.debug = True
+    app.debug = os.environ.get("FLASK_DEBUG", "false").lower() == "true"
 
     db.init_app(app)
 
@@ -50,47 +50,48 @@ app = create_app()
 from application.controllers import *
 
 
-if __name__ == "__main__":
-
+def init_db():
+    """Create tables and seed the manager user. Safe to call multiple times."""
     with app.app_context():
-
-        # Create tables
         db.create_all()
 
-        # Prevent double execution in debug mode
-        if os.environ.get("WERKZEUG_RUN_MAIN") == "true" or not app.debug:
+        manager_username = "manager"
+        manager_email = "manager@user.com"
+        manager_password = "manager143"
 
-            manager_username = "manager"
-            manager_email = "manager@user.com"
-            manager_password = "manager143"
+        norm_email = manager_email.strip().lower()
 
-            norm_email = manager_email.strip().lower()
+        existing = User.query.filter(
+            or_(
+                User.username == manager_username,
+                (User.email != None) &
+                (db.func.lower(db.func.trim(User.email)) == norm_email),
+            )
+        ).first()
 
-            existing = User.query.filter(
-                or_(
-                    User.username == manager_username,
-                    (User.email != None) &
-                    (db.func.lower(db.func.trim(User.email)) == norm_email),
-                )
-            ).first()
+        if existing:
+            print("Manager already exists - skipping creation.")
+        else:
+            manager = User(
+                name="Manager",
+                email=norm_email,
+                username=manager_username,
+                password=manager_password,
+                type="manager"
+            )
 
-            if existing:
-                print("Manager already exists - skipping creation.")
-            else:
-                manager = User(
-                    name="Manager",
-                    email=norm_email,
-                    username=manager_username,
-                    password=manager_password,
-                    type="manager"
-                )
+            db.session.add(manager)
+            try:
+                db.session.commit()
+                print("Manager user created successfully.")
+            except IntegrityError as e:
+                db.session.rollback()
+                print("Could not create manager user:", e)
 
-                db.session.add(manager)
-                try:
-                    db.session.commit()
-                    print("Manager user created successfully.")
-                except IntegrityError as e:
-                    db.session.rollback()
-                    print("Could not create manager user:", e)
 
+# Initialize DB at module load (works for gunicorn, Vercel, and direct run)
+init_db()
+
+
+if __name__ == "__main__":
     app.run(debug=True)
