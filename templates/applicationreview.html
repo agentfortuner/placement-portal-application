@@ -4,107 +4,82 @@
 <title>Application Details</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+<link rel="stylesheet" href="/static/style.css">
 </head>
+<body>
+<div class="dash-wrap">
+  <nav class="sidebar">
+      <div class="sidebar-brand">
+          <i class="bi bi-building"></i> Company Panel
+      </div>
+      <div class="sidebar-section">MAIN</div>
+      <a href="/company" class="sidebar-link">
+          <i class="bi bi-speedometer2"></i> Dashboard
+      </a>
+      <a href="/company/profile" class="sidebar-link">
+          <i class="bi bi-gear"></i> Profile
+      </a>
+      <a href="/company/drives" class="sidebar-link">
+          <i class="bi bi-briefcase"></i> Placement Drives
+      </a>
+      <a href="/company/applications" class="sidebar-link active">
+          <i class="bi bi-file-earmark-text"></i> Applications
+      </a>
+      <div class="sidebar-footer">
+          <a href="/logout" class="sidebar-link sidebar-logout">
+              <i class="bi bi-box-arrow-right"></i> Logout
+          </a>
+      </div>
+  </nav>
 
+  <div class="dash-main">
+    <div class="page-header">
+      <h4>Application Details</h4>
+    </div>
 
-<body class="bg-light">
+    <div class="card shadow-sm mt-3 p-4">
+      <div class="mb-4">
+        <h5>Student Information</h5>
+        <div class="detail-grid mt-3">
+          <p><b>Name:</b> {{application.student.user.name}}</p>
+          <p><b>Email:</b> {{application.student.user.email}}</p>
+          <p><b>Department:</b> {{application.department}}</p>
+          <p><b>GPA:</b> {{application.gpa}}</p>
+        </div>
+      </div>
+      
+      <hr>
 
-<div class="container-fluid">
-<div class="row">
+      <div class="mb-4">
+        <h5>Resume</h5>
+        {% if application.student.resume %}
+        <a href="/resume/{{application.student.resume}}" class="btn btn-teal mt-2" target="_blank">
+          View Resume
+        </a>
+        {% else %}
+        <span class="text-muted d-block mt-2">Resume not uploaded</span>
+        {% endif %}
+      </div>
 
-<!-- Sidebar -->
-<div class="col-md-3 col-lg-2 bg-dark text-white min-vh-100 p-3 d-none d-md-block">
+      <hr>
 
-<h5 class="mb-4">Company Panel</h5>
-
-<ul class="nav flex-column">
-
-<li class="nav-item mb-2">
-<a href="/company" class="nav-link text-white">Dashboard</a>
-</li>
-
-<li class="nav-item mb-2">
-<a href="/company/profile" class="nav-link text-white">Profile</a>
-</li>
-
-<li class="nav-item mb-2">
-<a href="/company/drives" class="nav-link text-white">Placement Drives</a>
-</li>
-
-<li class="nav-item mb-2">
-<a href="/company/applications" class="nav-link text-white">Applications</a>
-</li>
-
-<hr class="bg-light">
-
-<li class="nav-item">
-<a href="/logout" class="nav-link text-danger">Logout</a>
-</li>
-
-</ul>
-
+      <div>
+        <h5>Update Application Status</h5>
+        <div class="btn-group mt-3 gap-2">
+          <a href="/company/application/{{application.id}}/shortlist" class="btn btn-amber">
+            Shortlist
+          </a>
+          <a href="/company/application/{{application.id}}/select" class="btn btn-emerald">
+            Select
+          </a>
+          <a href="/company/application/{{application.id}}/reject" class="btn btn-rose">
+            Reject
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
-
-
-<!-- Main Content -->
-<div class="col-md-9 col-lg-10 p-4">
-
-<h4>Application Details</h4>
-
-<div class="card shadow-sm mt-3 p-4">
-
-<h5>Student Information</h5>
-
-<p><b>Name:</b> {{application.student.user.name}}</p>
-<p><b>Email:</b> {{application.student.user.email}}</p>
-<p><b>Department:</b> {{application.department}}</p>
-<p><b>GPA:</b> {{application.gpa}}</p>
-
-<hr>
-
-<h5>Resume</h5>
-
-{% if application.student.resume %}
-
-<a href="/resume/{{application.student.resume}}" 
-class="btn btn-primary btn-sm" target="_blank">
-View Resume
-</a>
-
-{% else %}
-
-<span class="text-muted">Resume not uploaded</span>
-
-{% endif %}
-
-<hr>
-
-<h5>Update Application Status</h5>
-
-<div class="mt-3">
-
-<a href="/company/application/{{application.id}}/shortlist"
-class="btn btn-warning">
-Shortlist
-</a>
-
-<a href="/company/application/{{application.id}}/select"
-class="btn btn-success">
-Select
-</a>
-
-<a href="/company/application/{{application.id}}/reject"
-class="btn btn-danger">
-Reject
-</a>
-
-</div>
-
-</div>
-
-</div>
-</div>
-</div>
-
 </body>
 </html>

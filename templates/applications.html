@@ -4,118 +4,112 @@
 <title>Applications</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+<link rel="stylesheet" href="/static/style.css">
 </head>
+<body>
+<div class="dash-wrap">
+  <nav class="sidebar">
+      <div class="sidebar-brand">
+          <i class="bi bi-building"></i> Company Panel
+      </div>
+      <div class="sidebar-section">MAIN</div>
+      <a href="/company" class="sidebar-link">
+          <i class="bi bi-speedometer2"></i> Dashboard
+      </a>
+      <a href="/company/profile" class="sidebar-link">
+          <i class="bi bi-gear"></i> Profile
+      </a>
+      <a href="/company/drives" class="sidebar-link">
+          <i class="bi bi-briefcase"></i> Placement Drives
+      </a>
+      <a href="/company/applications" class="sidebar-link active">
+          <i class="bi bi-file-earmark-text"></i> Applications
+      </a>
+      <div class="sidebar-footer">
+          <a href="/logout" class="sidebar-link sidebar-logout">
+              <i class="bi bi-box-arrow-right"></i> Logout
+          </a>
+      </div>
+  </nav>
 
-<body class="bg-light">
+  <div class="dash-main">
+    <div class="page-header">
+      <h4>Student Applications</h4>
+    </div>
 
-<div class="container-fluid">
-<div class="row">
-<!-- Sidebar -->
-<div class="col-md-3 col-lg-2 bg-dark text-white min-vh-100 p-3 d-none d-md-block">
-    <h5 class="mb-4">Company Panel</h5>
-    <ul class="nav flex-column">
-        <li class="nav-item mb-2">
-            <a href="/company" class="nav-link text-white">Dashboard</a>
-        </li>
-        <li class="nav-item mb-2">
-            <a href="/company/profile" class="nav-link text-white">Profile</a>
-        </li>
-        <li class="nav-item mb-2">
-            <a href="/company/drives" class="nav-link text-white">Placement Drives</a>
-        </li>
-        <li class="nav-item mb-2">
-            <a href="/company/applications" class="nav-link text-white">Applications</a>
-        </li>
-        <hr class="bg-light">
-        <li class="nav-item">
-            <a href="/logout" class="nav-link text-danger">Logout</a>
-        </li>
-    </ul>
+    <div class="card mt-3">
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="data-table w-100">
+            <thead>
+              <tr>
+                <th>Student</th>
+                <th>Drive</th>
+                <th>Department</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for application in applications %}
+              <tr>
+                <td>
+                  {% if application.student and application.student.user %}
+                  {{ application.student.user.name }}
+                  {% else %}
+                  Unknown Student
+                  {% endif %}
+                </td>
+                <td>{{ application.drive.title }}</td>
+                <td>{{ application.department }}</td>
+                <td>
+                  {% if application.status == "Applied" %}
+                  <span class="badge badge-slate">Applied</span>
+                  {% elif application.status == "Shortlisted" %}
+                  <span class="badge badge-amber">Shortlisted</span>
+                  {% elif application.status == "Selected" %}
+                  <span class="badge badge-emerald">Selected</span>
+                  {% elif application.status == "Rejected" %}
+                  <span class="badge badge-rose">Rejected</span>
+                  {% endif %}
+                </td>
+                <td>
+                  <div class="d-flex gap-2 mb-2">
+                      <a href="/company/application/{{application.id}}" class="btn btn-primary btn-sm">
+                          View
+                      </a>
+                      {% if application.student and application.student.resume %}
+                      <a href="/resume/{{application.student.resume}}" class="btn btn-teal btn-sm" target="_blank">
+                          Resume
+                      </a>
+                      {% endif %}
+                  </div>
+                  <div class="d-flex flex-wrap gap-2">
+                      {% if application.status == "Applied" %}
+                          <a href="/company/application/{{application.id}}/shortlist" class="btn btn-amber btn-sm">Shortlist</a>
+                          <a href="/company/application/{{application.id}}/reject" class="btn btn-rose btn-sm">Reject</a>
+                      {% elif application.status == "Shortlisted" %}
+                          <a href="/company/application/{{application.id}}/select" class="btn btn-emerald btn-sm">Select</a>
+                          <a href="/company/application/{{application.id}}/reject" class="btn btn-rose btn-sm">Reject</a>
+                          <a href="/company/application/{{application.id}}/applied" class="btn btn-ghost btn-sm">Revert</a>
+                      {% elif application.status == "Rejected" %}
+                          <a href="/company/application/{{application.id}}/shortlist" class="btn btn-amber btn-sm">Shortlist</a>
+                          <a href="/company/application/{{application.id}}/applied" class="btn btn-ghost btn-sm">Revert</a>
+                      {% elif application.status == "Selected" %}
+                          <span class="badge badge-emerald p-2">Finalized</span>
+                          <a href="/company/application/{{application.id}}/applied" class="btn btn-ghost btn-sm">Revert</a>
+                      {% endif %}
+                  </div>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
-
-<div class="col-md-9 col-lg-10 p-4">
-
-<h4 class="mb-4">Student Applications</h4>
-<div class="table-responsive">
-<table class="table table-hover align-middle">
-    <thead>
-        <tr>
-            <th>Student</th>
-            <th>Drive</th>
-            <th>Department</th>
-            <th>Status</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-
-    <tbody>
-        {% for application in applications %}
-        <tr>
-            <td>
-                {% if application.student and application.student.user %}
-                {{ application.student.user.name }}
-                {% else %}
-                Unknown Student
-                {% endif %}
-            </td>
-
-            <td>{{ application.drive.title }}</td>
-
-            <td>{{ application.department }}</td>
-
-            <td>
-                {% if application.status == "Applied" %}
-                <span class="badge bg-secondary">Applied</span>
-                {% elif application.status == "Shortlisted" %}
-                <span class="badge bg-warning text-dark">Shortlisted</span>
-                {% elif application.status == "Selected" %}
-                <span class="badge bg-success">Selected</span>
-                {% elif application.status == "Rejected" %}
-                <span class="badge bg-danger">Rejected</span>
-                {% endif %}
-            </td>
-
-            <td>
-                <div class="d-flex gap-2 mb-2">
-                    <a href="/company/application/{{application.id}}" class="btn btn-primary btn-sm">
-                        View
-                    </a>
-
-                    {% if application.student and application.student.resume %}
-                    <a href="/resume/{{application.student.resume}}" class="btn btn-info btn-sm text-white" target="_blank">
-                        Resume
-                    </a>
-                    {% endif %}
-                </div>
-
-                <div class="d-flex flex-wrap gap-2">
-                    {% if application.status == "Applied" %}
-                        <a href="/company/application/{{application.id}}/shortlist" class="btn btn-warning btn-sm">Shortlist</a>
-                        <a href="/company/application/{{application.id}}/reject" class="btn btn-danger btn-sm">Reject</a>
-
-                    {% elif application.status == "Shortlisted" %}
-                        <a href="/company/application/{{application.id}}/select" class="btn btn-success btn-sm">Select</a>
-                        <a href="/company/application/{{application.id}}/reject" class="btn btn-danger btn-sm">Reject</a>
-                        <a href="/company/application/{{application.id}}/applied" class="btn btn-secondary btn-sm">Revert</a>
-
-                    {% elif application.status == "Rejected" %}
-                        <a href="/company/application/{{application.id}}/shortlist" class="btn btn-warning btn-sm">Shortlist</a>
-                        <a href="/company/application/{{application.id}}/applied" class="btn btn-secondary btn-sm">Revert</a>
-
-                    {% elif application.status == "Selected" %}
-                        <span class="badge bg-success p-2">Finalized</span>
-                        <a href="/company/application/{{application.id}}/applied" class="btn btn-secondary btn-sm">Revert</a>
-                    {% endif %}
-                </div>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-
-</div>
-</div>
-</div>
-
 </body>
 </html>

@@ -4,129 +4,99 @@
 <title>Placement Drives</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+<link rel="stylesheet" href="/static/style.css">
 </head>
+<body>
+<div class="dash-wrap">
+  <nav class="sidebar">
+      <div class="sidebar-brand">
+          <i class="bi bi-building"></i> Company Panel
+      </div>
+      <div class="sidebar-section">MAIN</div>
+      <a href="/company" class="sidebar-link">
+          <i class="bi bi-speedometer2"></i> Dashboard
+      </a>
+      <a href="/company/profile" class="sidebar-link">
+          <i class="bi bi-gear"></i> Profile
+      </a>
+      <a href="/company/drives" class="sidebar-link active">
+          <i class="bi bi-briefcase"></i> Placement Drives
+      </a>
+      <a href="/company/applications" class="sidebar-link">
+          <i class="bi bi-file-earmark-text"></i> Applications
+      </a>
+      <div class="sidebar-footer">
+          <a href="/logout" class="sidebar-link sidebar-logout">
+              <i class="bi bi-box-arrow-right"></i> Logout
+          </a>
+      </div>
+  </nav>
 
-<body class="bg-light">
+  <div class="dash-main">
+    <div class="page-header d-flex justify-content-between align-items-center">
+      <h4>Placement Drives</h4>
+      <a href="/company/drive/create" class="btn btn-emerald">
+        <i class="bi bi-plus-circle"></i> Create New Drive
+      </a>
+    </div>
 
-<div class="container-fluid">
-<div class="row">
-<!-- Sidebar -->
-<div class="col-md-3 col-lg-2 bg-dark text-white min-vh-100 p-3 d-none d-md-block">
-
-<h5 class="mb-4">Company Panel</h5>
-
-<ul class="nav flex-column">
-
-<li class="nav-item mb-2">
-<a href="/company" class="nav-link text-white">Dashboard</a>
-</li>
-
-<li class="nav-item mb-2">
-<a href="/company/profile" class="nav-link text-white">Profile</a>
-</li>
-
-<li class="nav-item mb-2">
-<a href="/company/drives" class="nav-link text-white">Placement Drives</a>
-</li>
-
-<li class="nav-item mb-2">
-<a href="/company/applications" class="nav-link text-white">Applications</a>
-</li>
-
-<hr class="bg-light">
-
-<li class="nav-item">
-<a href="/logout" class="nav-link text-danger">Logout</a>
-</li>
-
-</ul>
-
+    <div class="card mt-3">
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="data-table w-100">
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th>Location</th>
+                <th>Vacancy</th>
+                <th>Deadline</th>
+                <th>Salary</th>
+                <th>Skills</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for drive in drives %}
+              <tr>
+                <td>{{drive.title}}</td>
+                <td>{{drive.location}}</td>
+                <td>{{drive.vacancy}}</td>
+                <td>{{drive.applicationDeadline}}</td>
+                <td>{{drive.salary}}</td>
+                <td>{{drive.skillsRequired}}</td>
+                <td>
+                  {% if drive.hiringStatus == "Hiring" %}
+                  <span class="badge badge-emerald">Active</span>
+                  {% else %}
+                  <span class="badge badge-rose">Closed</span>
+                  {% endif %}
+                </td>
+                <td>
+                  <div class="d-flex gap-2">
+                    <a href="/company/applications?drive={{drive.id}}" class="btn btn-primary btn-sm">
+                      View Applications
+                    </a>
+                    {% if drive.hiringStatus == "Hiring" %}
+                    <a href="/company/drive/{{drive.id}}/close" class="btn btn-rose btn-sm">
+                      Close
+                    </a>
+                    {% else %}
+                    <a href="/company/drive/{{drive.id}}/reopen" class="btn btn-emerald btn-sm">
+                      Reopen
+                    </a>
+                    {% endif %}
+                  </div>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
-
-
-<div class="col-md-9 col-lg-10 p-4">
-
-<h4>Placement Drives</h4>
-
-<a href="/company/drive/create" class="btn btn-success mb-3">
-Create New Drive
-</a>
-<div class="table-responsive">
-<table class="table table-hover align-middle">
-
-<thead>
-<tr>
-<th>Title</th>
-<th>Location</th>
-<th>Vacancy</th>
-<th>Deadline</th>
-<th>Salary</th>
-<th>Skills</th>
-<th>Status</th>
-<th>Actions</th>
-</tr>
-</thead>
-
-<tbody>
-
-{% for drive in drives %}
-
-<tr>
-
-<td>{{drive.title}}</td>
-<td>{{drive.location}}</td>
-<td>{{drive.vacancy}}</td>
-<td>{{drive.applicationDeadline}}</td>
-<td>{{drive.salary}}</td>
-<td>{{drive.skillsRequired}}</td>
-
-<td>
-
-{% if drive.hiringStatus == "Hiring" %}
-<span class="badge bg-success">Active</span>
-{% else %}
-<span class="badge bg-danger">Closed</span>
-{% endif %}
-
-</td>
-
-<td>
-
-<a href="/company/applications?drive={{drive.id}}" 
-class="btn btn-primary btn-sm">
-View Applications
-</a>
-
-{% if drive.hiringStatus == "Hiring" %}
-
-<a href="/company/drive/{{drive.id}}/close" 
-class="btn btn-danger btn-sm">
-Close
-</a>
-
-{% else %}
-
-<a href="/company/drive/{{drive.id}}/reopen" 
-class="btn btn-success btn-sm">
-Reopen
-</a>
-
-{% endif %}
-
-</td>
-
-</tr>
-
-{% endfor %}
-
-</tbody>
-
-</table>
-
-</div>
-
-</div>
-</div>
-
 </body>
 </html>
