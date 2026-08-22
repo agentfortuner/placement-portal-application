@@ -1,21 +1,29 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>Manager Dashboard | Placement Portal</title>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-<link rel="stylesheet" href="/static/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Manager dashboard — overview of students, companies, drives, and placement statistics.">
+  <title>Manager Dashboard — PlacePortal</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-
 <div class="dash-wrap">
+
   <!-- Sidebar -->
-  <nav class="sidebar">
-    <div class="sidebar-brand">Manager Panel</div>
-    <div class="sidebar-section">
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-icon"><i class="bi bi-lightning-charge-fill"></i></div>
+      <div>
+        <div class="brand-text">PlacePortal</div>
+        <div class="brand-sub">Admin Panel</div>
+      </div>
+    </div>
+    <div class="sidebar-nav">
+      <span class="sidebar-section-label">Navigation</span>
       <a href="/manager" class="sidebar-link active"><i class="bi bi-speedometer2"></i> Dashboard</a>
       <a href="/manager/companies" class="sidebar-link"><i class="bi bi-building"></i> Companies</a>
       <a href="/manager/students" class="sidebar-link"><i class="bi bi-people"></i> Students</a>
@@ -25,209 +33,250 @@
       <a href="/logout" class="sidebar-logout"><i class="bi bi-box-arrow-right"></i> Logout</a>
     </div>
   </nav>
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
 
-  <!-- Main Content -->
-  <div class="dash-main">
-    <h4 class="mb-4">Dashboard Overview</h4>
+  <!-- Main -->
+  <main class="dash-main">
+    <div class="dash-topbar">
+      <button class="sidebar-toggle" onclick="toggleSidebar()"><i class="bi bi-list"></i></button>
+      <div class="dash-topbar-right">
+        <span style="font-size:0.82rem;color:var(--text-muted)">Placement Administration</span>
+      </div>
+    </div>
 
-    <div class="stats-grid mb-4">
+    <div class="page-header">
+      <div>
+        <h1>Dashboard Overview</h1>
+        <p>Live snapshot of the placement portal</p>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-grid anim-fade">
       <div class="stat-card stat-indigo">
-        <div class="stat-icon"><i class="bi bi-people"></i></div>
-        <div class="stat-details">
-          <span class="stat-label">Total Students</span>
-          <span class="stat-value">{{students}}</span>
-        </div>
+        <div class="stat-icon-bg"></div>
+        <div class="stat-value">{{students}}</div>
+        <div class="stat-label">Total Students</div>
       </div>
       <div class="stat-card stat-teal">
-        <div class="stat-icon"><i class="bi bi-building"></i></div>
-        <div class="stat-details">
-          <span class="stat-label">Companies</span>
-          <span class="stat-value">{{companies}}</span>
-        </div>
+        <div class="stat-icon-bg"></div>
+        <div class="stat-value">{{companies}}</div>
+        <div class="stat-label">Companies</div>
       </div>
       <div class="stat-card stat-emerald">
-        <div class="stat-icon"><i class="bi bi-briefcase"></i></div>
-        <div class="stat-details">
-          <span class="stat-label">Total Drives</span>
-          <span class="stat-value">{{drives}}</span>
-        </div>
+        <div class="stat-icon-bg"></div>
+        <div class="stat-value">{{drives}}</div>
+        <div class="stat-label">Total Drives</div>
       </div>
     </div>
 
-    <h5>Placement Statistics</h5>
-    <div class="charts-grid mb-4" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem;">
-      <div class="card"><div class="card-body"><canvas id="deptChart"></canvas></div></div>
-      <div class="card"><div class="card-body"><canvas id="companyChart"></canvas></div></div>
-      <div class="card"><div class="card-body"><canvas id="applicationChart"></canvas></div></div>
-      <div class="card"><div class="card-body"><canvas id="placementChart"></canvas></div></div>
+    <!-- Charts -->
+    <div class="anim-fade-2" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-bottom:1.75rem">
+      <div class="chart-card"><h3>Dept. Distribution</h3><canvas id="deptChart"></canvas></div>
+      <div class="chart-card"><h3>Company Scale</h3><canvas id="companyChart"></canvas></div>
+      <div class="chart-card"><h3>Daily Applications</h3><canvas id="applicationChart"></canvas></div>
+      <div class="chart-card"><h3>Placement Results</h3><canvas id="placementChart"></canvas></div>
     </div>
 
-    <!-- SEARCH BAR -->
-    <div class="card mb-4">
-      <div class="card-header">Search</div>
+    <!-- Search -->
+    <div class="card anim-fade-3 mb-0">
+      <div class="card-header">
+        <div><h5>Search</h5><p>Find students or companies by name, ID, or email</p></div>
+      </div>
       <div class="card-body">
         <form method="GET" action="/manager">
-          <div class="input-group">
-            <input type="text" name="query" class="form-control" placeholder="Search student name, ID, or company" value="{{request.args.get('query','')}}" required minlength="2" maxlength="50" pattern="[A-Za-z0-9\s]+" title="Search must contain only letters, numbers, or spaces (2–50 characters)">
-            <button class="btn btn-primary">Search</button>
+          <div class="d-flex gap-3">
+            <div style="flex:1" class="search-wrap">
+              <i class="bi bi-search"></i>
+              <input type="text" name="query" class="form-control"
+                placeholder="Search student name, ID, or company..."
+                value="{{request.args.get('query','')}}"
+                required minlength="2" maxlength="50"
+                pattern="[A-Za-z0-9\s]+"
+                title="Search must contain only letters, numbers, or spaces (2–50 characters)">
+            </div>
+            <button class="btn btn-primary"><i class="bi bi-search"></i> Search</button>
           </div>
         </form>
       </div>
     </div>
 
-    <!-- STUDENT RESULTS -->
     {% if student_results %}
-    <div class="card mb-4">
-      <div class="card-header">Student Results</div>
-      <div class="card-body">
-        <table class="data-table">
-          <thead>
-            <tr><th>ID</th><th>Name</th><th>Email</th><th>Department</th></tr>
-          </thead>
-          <tbody>
-            {% for s in student_results %}
-            <tr><td>{{s.id}}</td><td>{{s.user.name}}</td><td>{{s.user.email}}</td><td>{{s.department}}</td></tr>
-            {% endfor %}
-          </tbody>
-        </table>
+    <div class="card mt-4">
+      <div class="card-header">
+        <h5>Student Results</h5>
+        <span class="badge badge-indigo">{{student_results|length}} found</span>
+      </div>
+      <div class="card-body" style="padding:0">
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Department</th></tr></thead>
+            <tbody>
+              {% for s in student_results %}
+              <tr>
+                <td class="cell-muted">#{{s.id}}</td>
+                <td class="cell-bold">{{s.user.name}}</td>
+                <td>{{s.user.email}}</td>
+                <td>{{s.department}}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
     {% endif %}
 
-    <!-- COMPANY RESULTS -->
     {% if company_results %}
-    <div class="card mb-4">
-      <div class="card-header">Company Results</div>
-      <div class="card-body">
-        <table class="data-table">
-          <thead>
-            <tr><th>ID</th><th>Name</th><th>Email</th><th>Industry</th></tr>
-          </thead>
-          <tbody>
-            {% for c in company_results %}
-            <tr><td>{{c.id}}</td><td>{{c.name}}</td><td>{{c.email}}</td><td>{{c.scale}}</td></tr>
-            {% endfor %}
-          </tbody>
-        </table>
+    <div class="card mt-4">
+      <div class="card-header">
+        <h5>Company Results</h5>
+        <span class="badge badge-teal">{{company_results|length}} found</span>
+      </div>
+      <div class="card-body" style="padding:0">
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Industry</th></tr></thead>
+            <tbody>
+              {% for c in company_results %}
+              <tr>
+                <td class="cell-muted">#{{c.id}}</td>
+                <td class="cell-bold">{{c.name}}</td>
+                <td>{{c.email}}</td>
+                <td>{{c.scale}}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
     {% endif %}
 
-    <!-- UPCOMING DRIVES -->
-    <div class="card mb-4">
-      <div class="card-header">Upcoming Drives</div>
-      <div class="card-body">
-        <table class="data-table">
-          <thead>
-            <tr><th>Company</th><th>Title</th><th>Deadline</th><th>Status</th></tr>
-          </thead>
-          <tbody>
-            {% for drive in upcoming_drives %}
-            <tr>
-              <td>{{drive.company.name}}</td>
-              <td>{{drive.title}}</td>
-              <td>{{drive.applicationDeadline}}</td>
-              <td><span class="badge badge-emerald">Hiring</span></td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
+    <!-- Two-col drives -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-top:1.25rem" class="anim-fade-3">
+      <div class="card">
+        <div class="card-header">
+          <div><h5>Upcoming Drives</h5></div>
+          <span class="badge badge-emerald"><i class="bi bi-dot"></i> Active</span>
+        </div>
+        <div class="card-body" style="padding:0">
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead><tr><th>Company</th><th>Title</th><th>Deadline</th></tr></thead>
+              <tbody>
+                {% for drive in upcoming_drives %}
+                <tr>
+                  <td class="cell-bold">{{drive.company.name}}</td>
+                  <td>{{drive.title}}</td>
+                  <td class="cell-muted">{{drive.applicationDeadline}}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div><h5>Past Drives</h5></div>
+          <span class="badge badge-slate">Closed</span>
+        </div>
+        <div class="card-body" style="padding:0">
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead><tr><th>Company</th><th>Title</th><th>Deadline</th></tr></thead>
+              <tbody>
+                {% for drive in past_drives %}
+                <tr>
+                  <td class="cell-bold">{{drive.company.name}}</td>
+                  <td>{{drive.title}}</td>
+                  <td class="cell-muted">{{drive.applicationDeadline}}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </div>
 
-    <!-- PAST DRIVES -->
-    <div class="card mb-4">
-      <div class="card-header">Past Drives</div>
-      <div class="card-body">
-        <table class="data-table">
-          <thead>
-            <tr><th>Company</th><th>Title</th><th>Deadline</th><th>Status</th></tr>
-          </thead>
-          <tbody>
-            {% for drive in past_drives %}
-            <tr>
-              <td>{{drive.company.name}}</td>
-              <td>{{drive.title}}</td>
-              <td>{{drive.applicationDeadline}}</td>
-              <td><span class="badge badge-slate">Closed</span></td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-  </div>
+  </main>
 </div>
 
-<!-- Chart Scripts -->
 <script>
+const chartDefaults = {
+  plugins: { legend: { labels: { color: '#94a3b8', font: { family: 'Inter', size: 11 } } } }
+};
 document.addEventListener("DOMContentLoaded", function() {
-    // 1. Department Pie Chart
-    const deptCtx = document.getElementById("deptChart");
-    if (deptCtx) {
-        new Chart(deptCtx, {
-            type: "pie",
-            data: {
-                labels: {{ dept_labels | safe }},
-                datasets: [{
-                    data: {{ dept_values | safe }},
-                    backgroundColor: ["#FF6384","#36A2EB","#FFCE56","#4BC0C0","#9966FF"]
-                }]
-            }
-        });
-    }
+  const deptCtx = document.getElementById("deptChart");
+  if (deptCtx) new Chart(deptCtx, {
+    type: "doughnut",
+    data: {
+      labels: {{ dept_labels | safe }},
+      datasets: [{ data: {{ dept_values | safe }},
+        backgroundColor: ["#6366f1","#14b8a6","#f59e0b","#f43f5e","#10b981"],
+        borderWidth: 0
+      }]
+    },
+    options: { ...chartDefaults, cutout: '65%' }
+  });
 
-    // 2. Company Pie Chart
-    const compCtx = document.getElementById("companyChart");
-    if (compCtx) {
-        new Chart(compCtx, {
-            type: "pie",
-            data: {
-                labels: {{ company_labels | safe }},
-                datasets: [{
-                    data: {{ company_values | safe }},
-                    backgroundColor: ["#FF9F40","#4BC0C0","#9966FF","#FF6384"]
-                }]
-            }
-        });
-    }
+  const compCtx = document.getElementById("companyChart");
+  if (compCtx) new Chart(compCtx, {
+    type: "doughnut",
+    data: {
+      labels: {{ company_labels | safe }},
+      datasets: [{ data: {{ company_values | safe }},
+        backgroundColor: ["#f59e0b","#14b8a6","#6366f1","#f43f5e"],
+        borderWidth: 0
+      }]
+    },
+    options: { ...chartDefaults, cutout: '65%' }
+  });
 
-    // 3. Daily Applications Line Chart
-    const appCtx = document.getElementById("applicationChart");
-    if (appCtx) {
-        new Chart(appCtx, {
-            type: "line",
-            data: {
-                labels: {{ application_dates | safe }},
-                datasets: [{
-                    label: "Applications",
-                    data: {{ application_counts | safe }},
-                    borderColor: "#36A2EB",
-                    fill: false,
-                    tension: 0.3
-                }]
-            },
-            options: { scales: { y: { beginAtZero: true } } }
-        });
-    }
+  const appCtx = document.getElementById("applicationChart");
+  if (appCtx) new Chart(appCtx, {
+    type: "line",
+    data: {
+      labels: {{ application_dates | safe }},
+      datasets: [{ label: "Applications", data: {{ application_counts | safe }},
+        borderColor: "#818cf8", backgroundColor: "rgba(99,102,241,0.1)",
+        fill: true, tension: 0.4, pointRadius: 3, pointBackgroundColor: "#818cf8"
+      }]
+    },
+    options: { ...chartDefaults, scales: {
+      x: { ticks: { color: '#64748b', font: { size: 10 } }, grid: { color: 'rgba(255,255,255,0.04)' } },
+      y: { beginAtZero: true, ticks: { color: '#64748b', font: { size: 10 } }, grid: { color: 'rgba(255,255,255,0.04)' } }
+    }}
+  });
 
-    // 4. Placement Success Chart
-    const placeCtx = document.getElementById("placementChart");
-    if (placeCtx) {
-        new Chart(placeCtx, {
-            type: "bar",
-            data: {
-                labels: {{ placement_labels | safe }},
-                datasets: [{
-                    label: "Placement Results",
-                    data: {{ placement_values | safe }},
-                    backgroundColor: ["#4CAF50","#F44336"]
-                }]
-            }
-        });
-    }
+  const placeCtx = document.getElementById("placementChart");
+  if (placeCtx) new Chart(placeCtx, {
+    type: "bar",
+    data: {
+      labels: {{ placement_labels | safe }},
+      datasets: [{ label: "Results", data: {{ placement_values | safe }},
+        backgroundColor: ["#10b981","#f43f5e"],
+        borderRadius: 6
+      }]
+    },
+    options: { ...chartDefaults, scales: {
+      x: { ticks: { color: '#64748b' }, grid: { color: 'rgba(255,255,255,0.04)' } },
+      y: { beginAtZero: true, ticks: { color: '#64748b' }, grid: { color: 'rgba(255,255,255,0.04)' } }
+    }}
+  });
 });
+
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sidebarOverlay').classList.toggle('open');
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebarOverlay').classList.remove('open');
+}
 </script>
 </body>
 </html>

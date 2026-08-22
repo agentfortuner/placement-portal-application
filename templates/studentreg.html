@@ -1,100 +1,113 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Registration - PlacePortal</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Bootstrap Icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="/static/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Registration — PlacePortal</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-    <div class="auth-wrap">
-        <div class="auth-card" style="max-width: 600px;">
-            <div class="auth-header text-center mb-4">
-                <i class="bi bi-mortarboard fs-1 text-primary mb-2"></i>
-                <h2>Student Registration</h2>
-            </div>
-            
-            {% with messages = get_flashed_messages(with_categories=true) %}
-                {% if messages %}
-                    {% for category, message in messages %}
-                        <div class="alert alert-{{ category }}">{{ message }}</div>
-                    {% endfor %}
-                {% endif %}
-            {% endwith %}
-
-            <div class="card-body">
-                <form action="/register-student" method="POST" enctype="multipart/form-data">
-                    <div class="form-group mb-3">
-                        <label for="name" class="form-label">Full Name</label>
-                        <input type="text" class="form-control" id="name" name="name" required minlength="2" maxlength="100">
-                    </div>
-                    <div class="form-group mb-3">
-                        <label for="username" class="form-label">Username</label>
-                        <input type="text" class="form-control" id="username" name="username" required minlength="3" maxlength="20" pattern="[a-zA-Z0-9_]+" title="Only letters, numbers, and underscores allowed">
-                    </div>
-                    <div class="form-group mb-3">
-                        <label for="email" class="form-label">Email</label>
-                        <input type="email" class="form-control" id="email" name="email" required>
-                    </div>
-                    <div class="form-group mb-3">
-                        <label for="password" class="form-label">Password</label>
-                        <input type="password" class="form-control" id="password" name="password" required minlength="6">
-                    </div>
-                    <div class="form-group mb-3">
-                        <label for="rollNumber" class="form-label">Roll Number</label>
-                        <input type="text" class="form-control" id="rollNumber" name="rollNumber" required pattern="[A-Z0-9]+" title="Alphanumeric roll number">
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group mb-3">
-                                <label for="department" class="form-label">Department</label>
-                                <select class="form-select" id="department" name="department" required>
-                                    <option value="" disabled selected>Select Dept</option>
-                                    <option value="CSE">CSE</option>
-                                    <option value="ECE">ECE</option>
-                                    <option value="ME">ME</option>
-                                    <option value="CE">CE</option>
-                                    <option value="DS">DS</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group mb-3">
-                                <label for="yearOfStudy" class="form-label">Year of Study</label>
-                                <select class="form-select" id="yearOfStudy" name="yearOfStudy" required>
-                                    <option value="" disabled selected>Select Year</option>
-                                    <option value="1">1</option>
-                                    <option value="2">2</option>
-                                    <option value="3">3</option>
-                                    <option value="4">4</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group mb-3">
-                        <label for="gpa" class="form-label">CGPA</label>
-                        <input type="number" class="form-control" id="gpa" name="gpa" step="0.01" min="0" max="10" required>
-                    </div>
-                    <div class="form-group mb-4">
-                        <label for="resume" class="form-label">Resume (PDF)</label>
-                        <input type="file" class="form-control" id="resume" name="resume" accept=".pdf" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary w-100">Register</button>
-                </form>
-            </div>
-            
-            <div class="text-center mt-4">
-                <p class="text-muted">Already have an account? <a href="/login" class="text-primary text-decoration-none">Login here</a></p>
-            </div>
-        </div>
+<div class="auth-wrap" style="align-items:flex-start;padding-top:2.5rem">
+  <div class="auth-card wide">
+    <div class="auth-header">
+      <div class="auth-icon-wrap"><i class="bi bi-mortarboard-fill"></i></div>
+      <h2>Student Registration</h2>
+      <p>Create your student account to access placement drives</p>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }}"><i class="bi bi-exclamation-circle"></i>{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <form method="POST" enctype="multipart/form-data">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Full Name</label>
+          <input type="text" class="form-control" name="name" placeholder="John Doe"
+            required minlength="2" maxlength="60"
+            pattern="[A-Za-z\s]+" title="Name should contain letters and spaces only">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Username</label>
+          <input type="text" class="form-control" name="username" placeholder="johndoe123"
+            required minlength="3" maxlength="30"
+            pattern="[A-Za-z0-9_]+" title="Username: letters, numbers, underscores (3–30 chars)">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input type="email" class="form-control" name="email" placeholder="john@college.edu"
+            required maxlength="100">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input type="password" class="form-control" name="password" placeholder="Min. 8 characters"
+            required minlength="8" maxlength="64">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Roll Number</label>
+          <input type="text" class="form-control" name="rollNumber" placeholder="CS21B001"
+            required pattern="[A-Za-z0-9\-]+"
+            title="Roll number: letters, numbers, hyphens only">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Department</label>
+          <select class="form-select" name="department" required>
+            <option value="" disabled selected>Select department</option>
+            <option value="CSE">CSE</option>
+            <option value="ECE">ECE</option>
+            <option value="ME">ME</option>
+            <option value="CE">CE</option>
+            <option value="DS">DS</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Year of Study</label>
+          <select class="form-select" name="yearOfStudy" required>
+            <option value="" disabled selected>Select year</option>
+            <option value="1">1st Year</option>
+            <option value="2">2nd Year</option>
+            <option value="3">3rd Year</option>
+            <option value="4">4th Year</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">GPA</label>
+          <input type="number" class="form-control" name="gpa" placeholder="e.g. 8.5"
+            required min="0" max="10" step="0.01"
+            title="GPA must be between 0 and 10">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Resume <span class="text-muted" style="font-weight:400;font-size:0.75rem">(PDF or Word)</span></label>
+        <input type="file" class="form-control" name="resume"
+          accept=".pdf,.doc,.docx"
+          title="Upload your resume as PDF or Word document">
+      </div>
+
+      <button type="submit" class="btn btn-primary w-100 btn-lg mt-2">
+        <i class="bi bi-person-check"></i> Create Student Account
+      </button>
+    </form>
+
+    <div class="auth-divider">already have an account?</div>
+    <a href="/login" class="btn btn-ghost w-100">Sign In Instead</a>
+  </div>
+</div>
 </body>
 </html>

@@ -1,93 +1,150 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Student dashboard for placement portal, showing available drives, applications and placement history.">
-    <title>Student Dashboard | Placement Portal</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="/static/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Student dashboard — track drives, applications, and placement history.">
+  <title>Dashboard — PlacePortal</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-    <div class="dash-wrap">
-        <nav class="sidebar">
-            <div class="sidebar-brand">Placement Portal</div>
-            <div class="sidebar-section">Student Panel</div>
-            <a href="/student" class="sidebar-link active">
-                <i class="bi bi-speedometer2"></i> Dashboard
-            </a>
-            <a href="/student/profile" class="sidebar-link">
-                <i class="bi bi-person-circle"></i> Profile
-            </a>
-            <a href="/student/drives" class="sidebar-link">
-                <i class="bi bi-briefcase"></i> Apply Drives
-            </a>
-            <a href="/student/applications" class="sidebar-link">
-                <i class="bi bi-file-earmark-text"></i> My Applications
-            </a>
-            <div class="sidebar-footer">
-                <a href="/logout" class="sidebar-link sidebar-logout">
-                    <i class="bi bi-box-arrow-right"></i> Logout
-                </a>
-            </div>
-        </nav>
+<div class="dash-wrap">
 
-        <div class="dash-main">
-            <div class="page-header d-flex justify-content-between align-items-center">
-                <h2>Student Dashboard</h2>
-                <span class="text-muted">Welcome back, {{ current_user.name }}</span>
-            </div>
-
-            <div class="stats-grid">
-                <div class="stat-card stat-indigo">
-                    <div class="stat-title">Available Drives</div>
-                    <div class="stat-value">{{ drives }}</div>
-                </div>
-                <div class="stat-card stat-teal">
-                    <div class="stat-title">Applications Submitted</div>
-                    <div class="stat-value">{{ applications }}</div>
-                </div>
-                <div class="stat-card stat-amber">
-                    <div class="stat-title">Shortlisted</div>
-                    <div class="stat-value">{{ shortlisted }}</div>
-                </div>
-            </div>
-
-            <div class="card mt-4">
-                <div class="card-header">
-                    <h5 class="mb-0">Placement History</h5>
-                </div>
-                <div class="card-body">
-                    {% if placements %}
-                    <table class="data-table table w-100">
-                        <thead>
-                            <tr>
-                                <th>Company</th>
-                                <th>Drive/Position</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for p in placements %}
-                            <tr>
-                                <td>{{ p.drive.company.name }}</td>
-                                <td>{{ p.drive.title }}</td>
-                                <td>
-                                    <span class="badge badge-emerald">Placed</span>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                    {% else %}
-                    <div class="text-center text-muted py-4">
-                        No placements recorded yet. Keep applying!
-                    </div>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
+  <!-- Sidebar -->
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-icon"><i class="bi bi-lightning-charge-fill"></i></div>
+      <div>
+        <div class="brand-text">PlacePortal</div>
+        <div class="brand-sub">Student Panel</div>
+      </div>
     </div>
+
+    <div class="sidebar-nav">
+      <span class="sidebar-section-label">Navigation</span>
+      <a href="/student" class="sidebar-link active">
+        <i class="bi bi-speedometer2"></i> Dashboard
+      </a>
+      <a href="/student/profile" class="sidebar-link">
+        <i class="bi bi-person-circle"></i> My Profile
+      </a>
+      <a href="/student/drives" class="sidebar-link">
+        <i class="bi bi-briefcase"></i> Browse Drives
+      </a>
+      <a href="/student/applications" class="sidebar-link">
+        <i class="bi bi-file-earmark-text"></i> My Applications
+      </a>
+    </div>
+
+    <div class="sidebar-footer">
+      <a href="/logout" class="sidebar-logout">
+        <i class="bi bi-box-arrow-right"></i> Logout
+      </a>
+    </div>
+  </nav>
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+  <!-- Main -->
+  <main class="dash-main">
+    <div class="dash-topbar">
+      <div>
+        <button class="sidebar-toggle" onclick="toggleSidebar()">
+          <i class="bi bi-list"></i>
+        </button>
+      </div>
+      <div class="dash-topbar-right">
+        <span style="font-size:0.82rem;color:var(--text-muted)">
+          Welcome back, <strong style="color:var(--text)">{{ current_user.name }}</strong>
+        </span>
+        <a href="/student/profile" class="btn btn-ghost btn-sm">
+          <i class="bi bi-person"></i>
+        </a>
+      </div>
+    </div>
+
+    <div class="page-header">
+      <div>
+        <h1>Dashboard</h1>
+        <p>Here's your placement overview</p>
+      </div>
+      <a href="/student/drives" class="btn btn-primary btn-sm">
+        <i class="bi bi-briefcase"></i> Browse Drives
+      </a>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-grid anim-fade">
+      <div class="stat-card stat-indigo">
+        <div class="stat-icon-bg"></div>
+        <div class="stat-value">{{ drives }}</div>
+        <div class="stat-label">Available Drives</div>
+      </div>
+      <div class="stat-card stat-teal">
+        <div class="stat-icon-bg"></div>
+        <div class="stat-value">{{ applications }}</div>
+        <div class="stat-label">Applications Sent</div>
+      </div>
+      <div class="stat-card stat-amber">
+        <div class="stat-icon-bg"></div>
+        <div class="stat-value">{{ shortlisted }}</div>
+        <div class="stat-label">Shortlisted</div>
+      </div>
+    </div>
+
+    <!-- Placement History -->
+    <div class="card anim-fade-2">
+      <div class="card-header">
+        <div>
+          <h5>Placement History</h5>
+          <p>Your confirmed placements</p>
+        </div>
+        <span class="badge badge-emerald">{{ placements|length if placements else 0 }} records</span>
+      </div>
+      <div class="card-body" style="padding:0">
+        {% if placements %}
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Company</th>
+                <th>Position</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for p in placements %}
+              <tr>
+                <td class="cell-bold">{{ p.drive.company.name }}</td>
+                <td>{{ p.drive.title }}</td>
+                <td><span class="badge badge-emerald"><i class="bi bi-check-circle"></i> Placed</span></td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% else %}
+        <div class="empty-state">
+          <i class="bi bi-briefcase"></i>
+          <p>No placements yet — keep applying and you'll get there!</p>
+          <a href="/student/drives" class="btn btn-primary btn-sm mt-3">Browse Open Drives</a>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sidebarOverlay').classList.toggle('open');
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebarOverlay').classList.remove('open');
+}
+</script>
 </body>
 </html>

@@ -1,93 +1,111 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>Create Drive</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-<link rel="stylesheet" href="/static/style.css">
+  <meta charset="UTF-8">
+  <title>Create Placement Drive</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-<div class="dash-wrap">
-  <nav class="sidebar">
+  <div class="dash-wrap">
+    <nav class="sidebar" id="sidebar">
       <div class="sidebar-brand">
-          <i class="bi bi-building"></i> Company Panel
+        <div class="brand-icon"><i class="bi bi-lightning-charge-fill"></i></div>
+        <div>
+          <div class="brand-text">PlacePortal</div>
+          <div class="brand-sub">Company Panel</div>
+        </div>
       </div>
-      <div class="sidebar-section">MAIN</div>
-      <a href="/company" class="sidebar-link">
-          <i class="bi bi-speedometer2"></i> Dashboard
-      </a>
-      <a href="/company/profile" class="sidebar-link">
-          <i class="bi bi-gear"></i> Profile
-      </a>
-      <a href="/company/drives" class="sidebar-link active">
-          <i class="bi bi-briefcase"></i> Placement Drives
-      </a>
-      <a href="/company/applications" class="sidebar-link">
-          <i class="bi bi-file-earmark-text"></i> Applications
-      </a>
+      <div class="sidebar-nav">
+        <span class="sidebar-section-label">Navigation</span>
+        <a href="/company" class="sidebar-link"><i class="bi bi-speedometer2"></i> Dashboard</a>
+        <a href="/company/profile" class="sidebar-link"><i class="bi bi-person-circle"></i> Profile</a>
+        <a href="/company/drives" class="sidebar-link active"><i class="bi bi-briefcase"></i> Placement Drives</a>
+        <a href="/company/applications" class="sidebar-link"><i class="bi bi-file-earmark-text"></i> Applications</a>
+      </div>
       <div class="sidebar-footer">
-          <a href="/logout" class="sidebar-link sidebar-logout">
-              <i class="bi bi-box-arrow-right"></i> Logout
-          </a>
+        <a href="/logout" class="sidebar-logout"><i class="bi bi-box-arrow-right"></i> Logout</a>
       </div>
-  </nav>
+    </nav>
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
 
-  <div class="dash-main">
-    <div class="page-header">
-      <h4>Create Placement Drive</h4>
-    </div>
+    <div class="dash-main">
+      <div class="dash-topbar">
+        <button class="sidebar-toggle" onclick="toggleSidebar()"><i class="bi bi-list"></i></button>
+      </div>
+      <div class="page-content">
+        <div class="page-header">
+          <h2>Create Placement Drive</h2>
+        </div>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
 
-    <div class="card mt-3">
-      <div class="card-body">
-        <form method="POST">
-          <div class="form-group mb-3">
-            <label class="form-label">Job Title</label>
-            <input name="title" class="form-control" placeholder="Job Title" required minlength="3" maxlength="100" pattern="[A-Za-z0-9\s\-]+" title="Job title must be 3–100 characters and contain letters, numbers or hyphens">
+        <div class="card">
+          <div class="card-body">
+            <form method="POST">
+              <div class="form-group mb-3">
+                <label class="form-label">Job Title</label>
+                <input type="text" class="form-control" name="title" required minlength="3" maxlength="100" pattern="[A-Za-z0-9\s\-]+" title="Job title must be 3–100 characters...">
+              </div>
+              <div class="form-group mb-3">
+                <label class="form-label">Job Description</label>
+                <textarea class="form-control" name="description" required minlength="20" maxlength="1000"></textarea>
+              </div>
+              <div class="form-group mb-3">
+                <label class="form-label">Eligibility Criteria</label>
+                <textarea class="form-control" name="eligibilityCriteria" required minlength="10" maxlength="500"></textarea>
+              </div>
+              <div class="row">
+                <div class="form-group col-md-6 mb-3">
+                  <label class="form-label">Salary Package</label>
+                  <input type="text" class="form-control" name="salary" required pattern="[0-9]+" title="Salary must be numbers only">
+                </div>
+                <div class="form-group col-md-6 mb-3">
+                  <label class="form-label">Required Skills</label>
+                  <input type="text" class="form-control" name="skillsRequired" required pattern="[A-Za-z,\s]+" placeholder="e.g. Python, SQL, Java">
+                </div>
+              </div>
+              <div class="row">
+                <div class="form-group col-md-6 mb-3">
+                  <label class="form-label">Experience Required</label>
+                  <input type="text" class="form-control" name="experienceRequired" required pattern="[A-Za-z0-9\s\-]+">
+                </div>
+                <div class="form-group col-md-6 mb-3">
+                  <label class="form-label">Number of Vacancies</label>
+                  <input type="number" class="form-control" name="vacancy" required min="1" max="1000">
+                </div>
+              </div>
+              <div class="row">
+                <div class="form-group col-md-4 mb-3">
+                  <label class="form-label">Job Location</label>
+                  <input type="text" class="form-control" name="location" required pattern="[A-Za-z\s]+">
+                </div>
+                <div class="form-group col-md-4 mb-3">
+                  <label class="form-label">Application Deadline</label>
+                  <input type="date" class="form-control" name="applicationDeadline" required>
+                </div>
+                <div class="form-group col-md-4 mb-3">
+                  <label class="form-label">Interview Rounds</label>
+                  <input type="number" class="form-control" name="interviewrounds" value="2" required min="1" max="10">
+                </div>
+              </div>
+              <button type="submit" class="btn btn-primary">Create Drive</button>
+            </form>
           </div>
-          <div class="form-group mb-3">
-            <label class="form-label">Job Description</label>
-            <textarea name="description" class="form-control" placeholder="Job Description" required minlength="20" maxlength="1000" title="Description should be between 20 and 1000 characters"></textarea>
-          </div>
-          <div class="form-group mb-3">
-            <label class="form-label">Eligibility Criteria</label>
-            <textarea name="eligibilityCriteria" class="form-control" placeholder="Eligibility Criteria" required minlength="10" maxlength="500" title="Eligibility criteria should be between 10 and 500 characters"></textarea>
-          </div>
-          <div class="form-group mb-3">
-            <label class="form-label">Salary Package</label>
-            <input name="salary" class="form-control" placeholder="Salary Package" required pattern="[0-9]+" title="Salary must contain numbers only (annual package)">
-          </div>
-          <div class="form-group mb-3">
-            <label class="form-label">Required Skills</label>
-            <input name="skillsRequired" class="form-control" placeholder="Required Skills (comma separated)" required pattern="[A-Za-z,\s]+" title="Enter skills separated by commas">
-          </div>
-          <div class="form-group mb-3">
-            <label class="form-label">Experience Required</label>
-            <input name="experienceRequired" class="form-control" placeholder="Experience Required" required pattern="[A-Za-z0-9\s\-]+" title="Enter experience in years">
-          </div>
-          <div class="form-group mb-3">
-            <label class="form-label">Number of Vacancies</label>
-            <input name="vacancy" type="number" class="form-control" placeholder="Number of Vacancies" required min="1" max="1000">
-          </div>
-          <div class="form-group mb-3">
-            <label class="form-label">Job Location</label>
-            <input name="location" class="form-control" placeholder="Job Location" required pattern="[A-Za-z\s]+" title="Location should contain letters only">
-          </div>
-          <div class="form-group mb-3">
-            <label class="form-label">Application Deadline</label>
-            <input type="date" name="applicationDeadline" class="form-control" required>
-          </div>
-          <div class="form-group mb-3">
-            <label class="form-label">Interview Rounds</label>
-            <input type="number" name="interviewrounds" class="form-control" placeholder="Interview Rounds" value="2" required min="1" max="10">
-          </div>
-          <button class="btn btn-primary mt-2">
-            Create Drive
-          </button>
-        </form>
+        </div>
       </div>
     </div>
   </div>
-</div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+  function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open');document.getElementById('sidebarOverlay').classList.toggle('open');}
+  function closeSidebar(){document.getElementById('sidebar').classList.remove('open');document.getElementById('sidebarOverlay').classList.remove('open');}
+  </script>
 </body>
 </html>
