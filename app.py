@@ -12,7 +12,7 @@ login_manager = LoginManager()
 
 
 def create_app():
-    app = Flask(__name__)
+    app = Flask(__name__, static_folder='static', static_url_path='/static')
 
     app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY", "afgjke12359754iloyuremane45j")
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/placement_portal.sqlite3'
